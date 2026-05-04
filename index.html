@@ -143,6 +143,109 @@
     color:#fff;
   }
 
+  .card.red{
+    background:linear-gradient(180deg, var(--red-1) 0%, #b82d1e 100%);
+    color:#fff;
+  }
+
+  /* Tercer card: centrado y mismo tamaño que los demás */
+  .card-centered{
+    grid-column:1 / -1;
+    justify-self:center;
+    width:260px;
+  }
+
+  .btn.dark{
+    background:linear-gradient(135deg, #17181b, #060606);
+    color:#fff;
+    box-shadow:0 10px 24px rgba(0,0,0,.36);
+  }
+
+  .icon-ventas .stroke-main{stroke:#ffffff;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .icon-ventas .accent{fill:rgba(255,255,255,.25)}
+  .icon-ventas .accent-dark{fill:rgba(0,0,0,.35)}
+
+  /* ── Modal Ventas ─────────────────────────────────────────── */
+  .mv-overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,.58);z-index:9999;
+    align-items:center;justify-content:center;
+  }
+  .mv-overlay.open{display:flex}
+  .mv-box{
+    background:#fff;border-radius:22px;
+    padding:32px 28px 26px;
+    max-width:360px;width:calc(100% - 32px);
+    box-shadow:0 28px 64px rgba(0,0,0,.24);
+    display:flex;flex-direction:column;gap:14px;
+    position:relative;
+  }
+  .mv-icon-head{
+    width:64px;height:64px;border-radius:50%;
+    background:linear-gradient(135deg,var(--red-1),#b82d1e);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 4px;
+    box-shadow:0 8px 22px rgba(229,63,46,.30);
+  }
+  .mv-icon-head svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .mv-box h3{
+    margin:0;font-size:20px;text-align:center;
+    font-weight:800;color:#111;letter-spacing:.2px;
+  }
+  .mv-box .mv-sub{
+    margin:0;font-size:14px;color:#6b7280;
+    text-align:center;line-height:1.45;
+  }
+  .mv-divider{border:none;border-top:1px solid #f0f0f0;margin:2px 0}
+  .mv-label{
+    font-size:12px;font-weight:700;color:#374151;
+    letter-spacing:.4px;text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .mv-input{
+    width:100%;height:44px;
+    border:1.5px solid #d1d5db;border-radius:10px;
+    padding:0 14px;font-size:15px;font-family:inherit;
+    outline:none;box-sizing:border-box;
+    transition:border-color .15s;
+  }
+  .mv-input:focus{border-color:var(--red-1)}
+  .mv-btn{
+    height:46px;width:100%;border:none;border-radius:999px;
+    background:linear-gradient(135deg,var(--red-1),var(--red-2));
+    color:#fff;font-weight:800;font-size:17px;
+    cursor:pointer;font-family:inherit;
+    box-shadow:0 10px 24px rgba(232,61,46,.28);
+    transition:transform .15s ease;
+  }
+  .mv-btn:hover{transform:translateY(-1px)}
+  .mv-close{
+    position:absolute;top:14px;right:16px;
+    background:none;border:none;cursor:pointer;
+    font-size:22px;color:#9ca3af;line-height:1;
+    padding:2px 6px;border-radius:6px;
+    transition:color .12s;
+  }
+  .mv-close:hover{color:#374151}
+  .mv-error{
+    color:#b91c1c;font-size:13px;
+    text-align:center;min-height:16px;
+    font-weight:600;
+  }
+  /* Notificación "en desarrollo" */
+  .mv-dev-badge{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:#fff;border-radius:999px;
+    padding:8px 18px;font-size:13px;font-weight:800;
+    text-align:center;letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .mv-dev-body{
+    font-size:14px;color:#4b5563;
+    text-align:center;line-height:1.5;
+    margin:0;
+  }
+
   .icon-ring{
     width:108px;
     height:108px;
@@ -364,6 +467,7 @@
     .eyebrow{font-size:14px;letter-spacing:6px}
     .cards{grid-template-columns:1fr;gap:18px}
     .card{min-height:290px}
+    .card-centered{width:100%;justify-self:stretch}
     .btn{width:100%;min-width:unset}
     .features{
       grid-template-columns:1fr;
@@ -412,10 +516,10 @@
               <h2>Liquidaciones</h2>
               <p>Gestiona y revisa las liquidaciones de vehículos de forma rápida y segura.</p>
               <div class="actions">
-                <a class="btn red" href="liquidacion.html">
+                <button class="btn red" onclick="abrirLogin('liquidacion')">
                   <span>INGRESAR</span>
                   <span class="arrow">›</span>
-                </a>
+                </button>
               </div>
             </section>
 
@@ -429,10 +533,36 @@
               <h2>Pagos</h2>
               <p>Valida y controla los pagos y documentos legales de cada vehículo.</p>
               <div class="actions">
-                <a class="btn silver" href="pagos.html">
+                <button class="btn silver" onclick="abrirLogin('pagos')">
                   <span>INGRESAR</span>
                   <span class="arrow">›</span>
-                </a>
+                </button>
+              </div>
+            </section>
+
+            <section class="card red card-centered">
+              <div class="icon-ring">
+                <svg class="icon-svg icon-ventas" viewBox="0 0 64 64" aria-hidden="true">
+                  <!-- Cuerpo del vehículo -->
+                  <rect x="7" y="34" width="42" height="13" rx="4" class="stroke-main"></rect>
+                  <path d="M13 34l7-13h18l7 13" class="stroke-main"></path>
+                  <!-- Ruedas -->
+                  <circle cx="18" cy="47" r="6" class="stroke-main"></circle>
+                  <circle cx="42" cy="47" r="6" class="stroke-main"></circle>
+                  <circle cx="18" cy="47" r="2" class="accent-dark"></circle>
+                  <circle cx="42" cy="47" r="2" class="accent-dark"></circle>
+                  <!-- Badge de precio -->
+                  <circle cx="46" cy="18" r="11" class="accent"></circle>
+                  <text x="46" y="23" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">$</text>
+                </svg>
+              </div>
+              <h2>Ventas</h2>
+              <p>Registro y seguimiento del proceso de venta de vehículos.</p>
+              <div class="actions">
+                <button class="btn dark" onclick="abrirLogin('ventas')">
+                  <span>INGRESAR</span>
+                  <span class="arrow">›</span>
+                </button>
               </div>
             </section>
           </div>
@@ -499,5 +629,188 @@
 
     <div class="footer-note">AUTOCOR · Inicio de módulos</div>
   </main>
+
+  <!-- ── Modal login compartido ───────────────────────────────── -->
+  <div id="modalLogin" class="mv-overlay" role="dialog" aria-modal="true" aria-labelledby="mlTitle">
+    <div class="mv-box">
+      <button class="mv-close" onclick="cerrarLogin()" aria-label="Cerrar">×</button>
+      <div class="mv-icon-head">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <path d="M9 12l2 2 4-4"></path>
+        </svg>
+      </div>
+      <h3 id="mlTitle">Iniciar sesión</h3>
+      <p id="mlSub" class="mv-sub"></p>
+      <hr class="mv-divider">
+      <div>
+        <div class="mv-label">Usuario</div>
+        <input id="mlUsuario" class="mv-input" type="text"
+               placeholder="Ej: YROMERO" autocomplete="off"
+               onkeydown="if(event.key==='Enter') document.getElementById('mlPassword').focus()">
+      </div>
+      <div>
+        <div class="mv-label">Clave</div>
+        <div style="position:relative;display:flex;align-items:center;">
+          <input id="mlPassword" class="mv-input" type="password"
+                 placeholder="Tu contraseña" autocomplete="new-password"
+                 style="padding-right:42px;"
+                 onkeydown="if(event.key==='Enter') confirmarLogin()">
+          <button type="button" onclick="mlTogglePass()" aria-label="Mostrar/ocultar clave"
+                  style="position:absolute;right:10px;background:none;border:none;cursor:pointer;
+                         color:#9ca3af;font-size:17px;padding:0;line-height:1;">👁</button>
+        </div>
+      </div>
+      <div id="mlError" class="mv-error"></div>
+      <button id="mlBtnIngresar" class="mv-btn" onclick="confirmarLogin()">INGRESAR</button>
+    </div>
+  </div>
+
+  <!-- ── Modal módulo en desarrollo (Ventas) ──────────────────── -->
+  <div id="modalVentasDev" class="mv-overlay" role="dialog" aria-modal="true">
+    <div class="mv-box">
+      <button class="mv-close" onclick="cerrarModalDev()" aria-label="Cerrar">×</button>
+      <div class="mv-icon-head" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+        </svg>
+      </div>
+      <h3>Módulo en desarrollo</h3>
+      <div class="mv-dev-badge">🚧 Próximamente disponible</div>
+      <p class="mv-dev-body">
+        El módulo de <strong>Ventas</strong> está siendo desarrollado.<br>
+        Pronto estará disponible con todas sus funciones.
+      </p>
+      <hr class="mv-divider">
+      <p class="mv-dev-body" style="font-size:13px;color:#9ca3af">
+        Si necesitas acceso anticipado, contacta al administrador del sistema.
+      </p>
+      <button class="mv-btn" onclick="cerrarModalDev()"
+              style="background:linear-gradient(135deg,#374151,#111827);box-shadow:0 10px 24px rgba(0,0,0,.24)">
+        CERRAR
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxbh1cLzulwNeFHJj2c6_k6Yk4PyHhzTlFlcfW7M0SMz4NrAxKUagOweQobl4AJTcmQ/exec";
+
+    // Módulos registrados: url=null significa "en desarrollo"
+    const MODULOS = {
+      liquidacion: { nombre: 'Liquidaciones', url: 'liquidacion.html' },
+      pagos:       { nombre: 'Pagos',         url: 'pagos.html'       },
+      ventas:      { nombre: 'Ventas',         url: 'ventas.html'      }
+    };
+
+    let moduloActivo = null; // clave del módulo que inició el login
+
+    async function apiCall(action, payload){
+      const body = Object.assign({ action: action }, payload);
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(body)
+      });
+      const json = JSON.parse(await res.text());
+      if(!json.ok) throw new Error(json.message || 'Error en API');
+      return json;
+    }
+
+    function mlTogglePass(){
+      const el = document.getElementById('mlPassword');
+      el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    function abrirLogin(modulo){
+      moduloActivo = modulo;
+      const cfg = MODULOS[modulo];
+
+      // Si ya hay sesión activa, acceder directo
+      try{
+        const auth = JSON.parse(sessionStorage.getItem('autocor_auth') || 'null');
+        if(auth && auth.token){
+          accederModulo(cfg);
+          return;
+        }
+      }catch(e){}
+
+      // Sin sesión: mostrar modal de login
+      document.getElementById('mlSub').textContent =
+        'Ingresa tu usuario y clave para acceder a ' + cfg.nombre + '.';
+      document.getElementById('mlUsuario').value = '';
+      document.getElementById('mlPassword').value = '';
+      document.getElementById('mlError').textContent = '';
+      document.getElementById('mlBtnIngresar').disabled = false;
+      document.getElementById('mlBtnIngresar').textContent = 'INGRESAR';
+      document.getElementById('modalLogin').classList.add('open');
+      setTimeout(function(){ document.getElementById('mlUsuario').focus(); }, 80);
+    }
+
+    function cerrarLogin(){
+      document.getElementById('modalLogin').classList.remove('open');
+      document.getElementById('mlError').textContent = '';
+      moduloActivo = null;
+    }
+
+    function cerrarModalDev(){
+      document.getElementById('modalVentasDev').classList.remove('open');
+    }
+
+    function accederModulo(cfg){
+      cerrarLogin();
+      if(cfg.url){
+        window.location.href = cfg.url;
+      } else {
+        // Módulo en desarrollo
+        document.getElementById('modalVentasDev').classList.add('open');
+      }
+    }
+
+    async function confirmarLogin(){
+      const u = (document.getElementById('mlUsuario').value || '').trim().toUpperCase();
+      const p = (document.getElementById('mlPassword').value || '').trim();
+      if(!u || !p){
+        document.getElementById('mlError').textContent = 'Ingresa tu usuario y clave.';
+        return;
+      }
+      const btn = document.getElementById('mlBtnIngresar');
+      btn.disabled = true;
+      btn.textContent = 'VERIFICANDO...';
+      document.getElementById('mlError').textContent = '';
+      try{
+        const resp = await apiCall('login', { username: u, password: p });
+        // Guardar sesión en sessionStorage — los módulos la leen al cargar
+        sessionStorage.setItem('autocor_auth', JSON.stringify({
+          user:        (resp.user && resp.user.username)    || u,
+          displayName: (resp.user && resp.user.displayName) || u,
+          isAdmin:     !!(resp.user && resp.user.isAdmin),
+          token:       resp.sessionToken || ''
+        }));
+        accederModulo(MODULOS[moduloActivo]);
+      }catch(err){
+        document.getElementById('mlError').textContent = err.message || 'Usuario o clave incorrectos.';
+        document.getElementById('mlPassword').value = '';
+        document.getElementById('mlPassword').focus();
+        btn.disabled = false;
+        btn.textContent = 'INGRESAR';
+      }
+    }
+
+    // Cerrar al clic fuera del cuadro
+    document.getElementById('modalLogin').addEventListener('click', function(e){
+      if(e.target === this) cerrarLogin();
+    });
+    document.getElementById('modalVentasDev').addEventListener('click', function(e){
+      if(e.target === this) cerrarModalDev();
+    });
+
+    // Cerrar con Escape
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        cerrarLogin();
+        cerrarModalDev();
+      }
+    });
+  </script>
 </body>
 </html>

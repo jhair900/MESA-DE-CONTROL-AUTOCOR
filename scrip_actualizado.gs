@@ -3,6 +3,7 @@ const SHEET_NAME = 'Liquidaciones';
 const USERS_SHEET = 'Usuarios';
 const GLOSSARY_SHEET = 'Glosario';
 const PAYMENTS_SHEET = 'Pagos';
+const VENTAS_SHEET = 'Ventas';
 const SESSION_TTL_MINUTES = 60 * 12; // 12 horas
 
 function doGet(e) {
@@ -30,6 +31,7 @@ function handleAction_(action, payload) {
   ensureUsersSheet_();
   ensureGlossarySheet_();
   ensurePaymentsSheet_();
+  ensureVentasSheet_();
 
   if (action === 'ping') return { ok: true, message: 'API funcionando' };
   if (action === 'setupUsers') return setupInitialUsers_();
@@ -101,6 +103,30 @@ function handleAction_(action, payload) {
     const session = validateSession_(payload.sessionToken);
     if (!session.ok) return session;
     return deletePagoByPlaca_(payload.placa, session);
+  }
+
+  if (action === 'saveVenta') {
+    const session = validateSession_(payload.sessionToken);
+    if (!session.ok) return session;
+    return saveVenta_(payload.data, session);
+  }
+
+  if (action === 'getVentaByPlaca') {
+    const session = validateSession_(payload.sessionToken);
+    if (!session.ok) return session;
+    return getVentaByPlaca_(payload.placa, session);
+  }
+
+  if (action === 'listVentas') {
+    const session = validateSession_(payload.sessionToken);
+    if (!session.ok) return session;
+    return listVentas_(payload.mode, session);
+  }
+
+  if (action === 'deleteVenta') {
+    const session = validateSession_(payload.sessionToken);
+    if (!session.ok) return session;
+    return deleteVentaByPlaca_(payload.placa, session);
   }
 
   return { ok: false, message: 'Acción no válida: ' + action };
@@ -835,5 +861,160 @@ function deletePagoByPlaca_(placa, session) {
     return { ok: true, message: 'Pago eliminado.' };
   } catch (err) {
     return { ok: false, message: 'Error al eliminar pago: ' + err.message };
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// VENTAS
+// ─────────────────────────────────────────────────────────────────
+
+function getVentasSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  return ss.getSheetByName(VENTAS_SHEET);
+}
+
+function ensureVentasSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(VENTAS_SHEET);
+
+  if (!sh) sh = ss.insertSheet(VENTAS_SHEET);
+
+  if (sh.getLastRow() === 0) {
+    sh.getRange(1, 1, 1, 6).setValues([[
+      'PLACA',
+      'ASESOR_CREADOR',
+      'CLIENTE',
+      'DICTAMEN',
+      'UPDATED_AT',
+      'DATA_JSON'
+    ]]);
+  }
+
+  return sh;
+}
+
+function saveVenta_(data, session) {
+  try {
+    if (!data) return { ok: false, message: 'No se recibió data de la venta.' };
+
+    const sheet = getVentasSheet_();
+    const placa = normalizePlaca_(data.placaValue || data.placa);
+    if (!placa) return { ok: false, message: 'La placa es obligatoria.' };
+
+    // Leer data existente para fusionar historial
+    let existingData = null;
+    const row = findRowByPlaca_(sheet, placa);
+    if (row > 0) {
+      const existingJson = sheet.getRange(row, 6).getValue();
+      existingData = existingJson ? JSON.parse(existingJson) : null;
+    }
+
+    // Construir historial acumulativo: existente + entrante + sesión actual
+    const history = buildHistory_(existingData, data, session.user);
+    data.placaValue = placa;
+    data.placa = placa;
+    data.historialUsuarios = history;
+    data.asesorCreador = firstUser_(history);  // primer guardador
+    data.asesorEditor  = lastEditor_(history); // último editor
+
+    const rowData = [
+      placa,
+      data.asesorCreador || session.user || '',
+      data.clienteValue  || '',
+      data.dictamenValue || '',
+      new Date(),
+      JSON.stringify(data)
+    ];
+
+    if (row > 0) {
+      sheet.getRange(row, 1, 1, 6).setValues([rowData]);
+      return { ok: true, message: 'Venta actualizada.', placa: placa, updated: true, data: data };
+    }
+
+    sheet.appendRow(rowData);
+    return { ok: true, message: 'Venta guardada.', placa: placa, updated: false, data: data };
+  } catch (err) {
+    return { ok: false, message: 'Error al guardar venta: ' + err.message };
+  }
+}
+
+function getVentaByPlaca_(placa, session) {
+  try {
+    const sheet = getVentasSheet_();
+    const row = findRowByPlaca_(sheet, placa);
+    if (!row) return { ok: false, message: 'No existe registro de venta para esa placa.' };
+
+    const json = sheet.getRange(row, 6).getValue();
+    const data = JSON.parse(json || '{}');
+
+    // Reconstruir historial desde los campos guardados
+    const history = buildHistory_(data, {}, null);
+    data.historialUsuarios = history;
+    data.asesorCreador = firstUser_(history);
+    data.asesorEditor  = lastEditor_(history);
+
+    return { ok: true, data: data, openedBy: session.user };
+  } catch (err) {
+    return { ok: false, message: 'Error al buscar venta: ' + err.message };
+  }
+}
+
+function listVentas_(mode, session) {
+  try {
+    const sheet = getVentasSheet_();
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return { ok: true, rows: [] };
+
+    let rows = sheet.getRange(2, 1, lastRow - 1, 6).getValues().map(function(r) {
+      let data = {};
+      try { data = JSON.parse(r[5] || '{}'); } catch(e) {}
+      const history = buildHistory_(data, {}, null);
+      return {
+        placa:          r[0] || '',
+        asesorCreador:  firstUser_(history) || r[1] || '',
+        asesorEditor:   lastEditor_(history),
+        historialUsuarios: history,
+        cliente:        r[2] || '',
+        dictamen:       r[3] || '',
+        updatedAt:      r[4] || '',
+        data:           data
+      };
+    });
+
+    if (mode === 'mio') {
+      rows = rows.filter(function(x) {
+        return uniqueUsers_(x.historialUsuarios).indexOf(normalizeUser_(session.user)) > -1;
+      });
+    }
+
+    rows.sort(function(a, b) {
+      return (a.placa || '').localeCompare(b.placa || '');
+    });
+
+    return { ok: true, rows: rows };
+  } catch (err) {
+    return { ok: false, message: 'Error al listar ventas: ' + err.message };
+  }
+}
+
+function deleteVentaByPlaca_(placa, session) {
+  try {
+    const sheet = getVentasSheet_();
+    const row = findRowByPlaca_(sheet, placa);
+    if (!row) return { ok: false, message: 'No existe registro de venta para esa placa.' };
+
+    const json = sheet.getRange(row, 6).getValue();
+    let data = {};
+    try { data = JSON.parse(json || '{}'); } catch(e) {}
+
+    const history = buildHistory_(data, {}, null);
+    if (!session.isAdmin && uniqueUsers_(history).indexOf(normalizeUser_(session.user)) === -1) {
+      return { ok: false, message: 'No autorizado para eliminar este registro de venta.' };
+    }
+
+    sheet.deleteRow(row);
+    return { ok: true, message: 'Venta eliminada.' };
+  } catch (err) {
+    return { ok: false, message: 'Error al eliminar venta: ' + err.message };
   }
 }
