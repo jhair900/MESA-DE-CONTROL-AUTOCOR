@@ -136,11 +136,16 @@
   .label{background:#f8fafc;font-weight:700;color:#374151;}
   .value{background:#fff;}
   .section{
-    background:var(--brand);color:#fff;
+    background:#374151;color:#fff;
     text-align:center;font-weight:700;text-transform:uppercase;
     font-family:'Poppins',sans-serif;font-size:11px;letter-spacing:.4px;
+    transition:background .25s, color .25s;
   }
   .section input{color:#fff;text-align:center;}
+  /* Semáforo dinámico del encabezado DOCUMENTACIÓN LEGAL */
+  .section.section-verde{background:#dcfce7!important;color:#166534!important;}
+  .section.section-amarillo{background:#fef9c3!important;color:#854d0e!important;}
+  .section.section-rojo{background:var(--brand)!important;color:#fff!important;}
   .subhead{
     background:#f1f5f9;font-weight:700;text-align:center;
     color:#374151;font-size:10px;text-transform:uppercase;letter-spacing:.3px;
@@ -340,7 +345,7 @@
 
 <!-- TOOLBAR -->
 <div class="toolbar-wrap">
-  <button class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + ZIP</button>
+  <button class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + Exportar</button>
   <button class="btn-secondary" onclick="buscarPorPlacaPrompt()">🔍 Buscar Placa</button>
   <button class="btn-secondary" onclick="agregarFilaDocumento()">+ Documento</button>
   <button class="btn-secondary" onclick="agregarFilaValidacion('tbodySri')">+ Validación SRI/ANT</button>
@@ -392,7 +397,7 @@
           <td colspan="3" class="value"><input id="clienteValue" type="text" value=""></td>
         </tr>
 
-        <tr><th colspan="4" class="section">DOCUMENTACIÓN LEGAL</th></tr>
+        <tr><th colspan="4" class="section" id="docLegalHeader">DOCUMENTACIÓN LEGAL</th></tr>
         <tr>
           <th class="subhead">DOCUMENTO</th>
           <th class="subhead">ESTADO</th>
@@ -446,12 +451,12 @@
       <div class="notice">Ingresa tu usuario y clave para guardar y buscar cuadros de pago.</div>
       <div class="field">
         <label>Usuario</label>
-        <div><input id="usuarioLogin" placeholder="Ej: YROMERO"></div>
+        <div><input id="usuarioLogin" placeholder="Ej: YROMERO" autocomplete="off"></div>
       </div>
       <div class="field">
         <label>Clave</label>
         <div style="position:relative;display:flex;align-items:center;">
-          <input id="passwordLogin" type="password" placeholder="Tu contraseña" style="padding-right:38px;width:100%;">
+          <input id="passwordLogin" type="password" placeholder="Tu contraseña" autocomplete="new-password" style="padding-right:38px;width:100%;">
           <button type="button" onclick="togglePass('passwordLogin',this)" style="position:absolute;right:6px;background:none;border:none;padding:4px;color:#6b7280;font-size:16px;cursor:pointer;">👁</button>
         </div>
       </div>
@@ -557,6 +562,7 @@ async function confirmarUsuario(){
       token: resp.sessionToken || ''
     });
     cerrarModal('modalUsuario');
+    document.getElementById('usuarioLogin').value = '';
     document.getElementById('passwordLogin').value = '';
     setStatus('SESIÓN INICIADA');
   }catch(err){
@@ -624,10 +630,10 @@ function addDocRow(data=['','','']){
   const tr = document.createElement('tr');
   tr.className = 'legal-row';
   tr.innerHTML = `
-    <td><input type="text" value="${escapeHtml(data[0])}"></td>
+    <td><input type="text" autocomplete="off" value="${escapeHtml(data[0])}"></td>
     <td class="center status-cell"><select class="center">${statusOptions(data[1] || '')}</select></td>
     <td class="center"><span class="tick-wrap">${tickMarkup(data[1] || '')}</span></td>
-    <td><input type="text" value="${escapeHtml(data[2] || '')}"></td>`;
+    <td><input type="text" autocomplete="off" value="${escapeHtml(data[2] || '')}"></td>`;
   document.getElementById('tbodyDocs').appendChild(tr);
   bindUppercaseInputs(tr);
   bindDocRow(tr);
@@ -637,9 +643,9 @@ function addDocRow(data=['','','']){
 function addValRow(targetId, data=['','','']){
   const tr = document.createElement('tr');
   tr.innerHTML = `
-    <td><input type="text" value="${escapeHtml(data[0] || '')}"></td>
+    <td><input type="text" autocomplete="off" value="${escapeHtml(data[0] || '')}"></td>
     <td class="center"><select class="center" disabled>${validationStatusOptions(data[1] || '')}</select></td>
-    <td colspan="2"><input type="text" value="${escapeHtml(data[2] || '')}"></td>`;
+    <td colspan="2"><input type="text" autocomplete="off" value="${escapeHtml(data[2] || '')}"></td>`;
   document.getElementById(targetId).appendChild(tr);
   bindUppercaseInputs(tr);
   bindValidationRow(tr, targetId);
@@ -981,52 +987,107 @@ function buildCaptureClone(){
   return clone;
 }
 
-async function exportarZIP(placa){
-  setStatus('GENERANDO IMÁGENES...');
-  const zip = new JSZip();
-  const folder = zip.folder(safeFileName(placa));
+async function exportarImagenes(placa){
+  /*
+   * NOTA TÉCNICA — Descarga de archivos desde el navegador:
+   *
+   * Los navegadores (Chrome, Firefox, Edge, Safari) no permiten crear ni
+   * descargar carpetas reales sin comprimir desde una página web. Esta es una
+   * limitación de la Web API (File System Access API no permite escritura
+   * arbitraria de carpetas en la mayoría de contextos). Por ello:
+   *
+   *   Sin prints adjuntos:
+   *     → Descarga directa del PNG del cuadro.
+   *       Nombre: "(PLACA).png"
+   *       Sin carpeta, sin ZIP, sin archivos extra.
+   *
+   *   Con prints adjuntos:
+   *     → PREFERENCIA: descarga sin comprimir. No es técnicamente posible
+   *       desde navegador sin instalar extensiones o usar Electron/Node.
+   *     → ALTERNATIVA APLICADA: se genera un ZIP con la estructura pedida.
+   *       El ZIP se llama "(PLACA).zip" y contiene la carpeta "(PLACA)/":
+   *
+   *         (PLACA)/
+   *           ├── PAGOS (PLACA).png   ← cuadro principal
+   *           ├── PRINT_1.png
+   *           ├── PRINT_2.png
+   *           └── PRINT_N.png
+   *           (+ PRINT_N.txt si el print tiene nota escrita)
+   */
 
+  // Nombres base:
+  // - folderName : solo la placa → usada como nombre del ZIP y carpeta interna
+  // - cuadroName : "PAGOS (PLACA).png" → nombre del cuadro dentro de la carpeta
+  const folderName = `(${placa})`;
+  const cuadroName = `PAGOS (${placa}).png`;
+
+  // ── 1. Captura del cuadro principal ──────────────────────────────────────
+  setStatus('CAPTURANDO CUADRO PRINCIPAL...');
   const captureTarget = buildCaptureClone();
   const canvas = await html2canvas(captureTarget, {
-    backgroundColor:'#ffffff',
-    scale:2.5,
-    useCORS:true
+    backgroundColor: '#ffffff',
+    scale: 2.5,
+    useCORS: true
   });
-
   captureTarget.remove();
-
   const cuadroBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-  folder.file(`${safeFileName(placa)}_00_CUADRO.png`, cuadroBlob);
 
+  // ── 2a. Sin prints → PNG directo, nombre solo con la placa ───────────────
+  if(supportPrints.length === 0){
+    const url = URL.createObjectURL(cuadroBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${folderName}.png`;   // → "(PLACA).png"
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 300);
+    return;
+  }
+
+  // ── 2b. Con prints → ZIP: carpeta "(PLACA)/" con cuadro + prints ─────────
+  // Nota: ZIP es la única alternativa viable en navegador para agrupar
+  // archivos bajo una carpeta sin necesidad de intervención del usuario.
+  setStatus('GENERANDO ZIP CON PRINTS...');
+  const zip = new JSZip();
+  const folder = zip.folder(folderName);   // carpeta interna: "(PLACA)/"
+
+  // Cuadro principal dentro de la carpeta
+  folder.file(cuadroName, cuadroBlob);
+
+  // Prints adjuntos (numerados desde 1, sin ceros de relleno extra)
   supportPrints.forEach((item, index) => {
     const blob = dataURLtoBlob(item.src);
-    const title = safeFileName(item.title || `PRINT_${index+1}`);
-    const ext = (blob.type || 'image/png').includes('jpeg') ? 'jpg' : 'png';
-    folder.file(`${safeFileName(placa)}_${String(index+1).padStart(2,'0')}_${title}.${ext}`, blob);
+    const num  = index + 1;
+    const ext  = (blob.type || 'image/png').includes('jpeg') ? 'jpg' : 'png';
+    folder.file(`PRINT_${num}.${ext}`, blob);
     if(item.note && String(item.note).trim()){
-      folder.file(`${safeFileName(placa)}_${String(index+1).padStart(2,'0')}_${title}.txt`, item.note);
+      folder.file(`PRINT_${num}.txt`, String(item.note).trim());
     }
   });
 
-  const zipBlob = await zip.generateAsync({type:'blob'});
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(zipBlob);
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(zipBlob);
-  a.download = `${safeFileName(placa)}.zip`;
+  a.href = url;
+  a.download = `${folderName}.zip`;    // → "(PLACA).zip"
   document.body.appendChild(a);
   a.click();
-  setTimeout(()=>{
-    URL.revokeObjectURL(a.href);
-    a.remove();
-  }, 300);
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 300);
 }
 
 async function guardarYExportarTodo(){
   try{
     setStatus('GUARDANDO CUADRO EN LÍNEA...');
     const placa = await guardarCuadroEnLinea();
-    setStatus('CUADRO GUARDADO. PREPARANDO ZIP...');
-    await exportarZIP(placa);
-    setStatus('PROCESO COMPLETO: CUADRO GUARDADO Y ZIP DESCARGADO', false, true);
+    const conPrints = supportPrints.length > 0;
+    setStatus(conPrints ? 'CUADRO GUARDADO. PREPARANDO ZIP...' : 'CUADRO GUARDADO. PREPARANDO IMAGEN...');
+    await exportarImagenes(placa);
+    setStatus(
+      conPrints
+        ? 'PROCESO COMPLETO: CUADRO GUARDADO Y ZIP DESCARGADO'
+        : 'PROCESO COMPLETO: CUADRO GUARDADO E IMAGEN DESCARGADA',
+      false, true
+    );
   }catch(err){
     console.error(err);
     setStatus(err.message || 'NO SE PUDO COMPLETAR EL PROCESO', true);
@@ -1086,6 +1147,14 @@ function setColor3(colorClass){
     var active = colorClass ? oc.indexOf("'"+colorClass+"'") !== -1 : oc.indexOf("''") !== -1;
     btn.classList.toggle('on', active);
   });
+  // Reflejar semáforo en el encabezado DOCUMENTACIÓN LEGAL
+  var hdr = document.getElementById('docLegalHeader');
+  if(hdr){
+    hdr.classList.remove('section-verde','section-amarillo','section-rojo');
+    if(colorClass === 'dict-verde') hdr.classList.add('section-verde');
+    else if(colorClass === 'dict-amarillo') hdr.classList.add('section-amarillo');
+    else if(colorClass === 'dict-rojo') hdr.classList.add('section-rojo');
+  }
 }
 
 function setColor2(colorClass){

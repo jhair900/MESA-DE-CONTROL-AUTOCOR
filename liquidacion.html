@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <style>
 :root{
   --brand:#E53F2E;
@@ -167,30 +169,89 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 .smallbtn.red{background:#dc2626;}
 .smallbtn.green{background:#059669;}
 
-/* Print */
+/* ── IMPRESIÓN / PDF ──────────────────────────────────── */
 @media print{
-  body{background:#fff;padding:0}
+  /* Página */
+  @page{size:A4 portrait;margin:9mm 10mm 10mm 10mm;}
+  html{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+
+  /* Estructura */
+  body{background:#fff !important;padding:0 !important;margin:0 !important;}
   .nav-sticky{display:none !important;}
-  .page-body{padding:0 !important;}
-  .document{box-shadow:none;border:none;border-radius:0;padding:16px;}
+  .page-body{padding:0 !important;margin:0 !important;}
+  .document{box-shadow:none !important;border:none !important;border-radius:0 !important;padding:12px 14px !important;}
 
-  .header{align-items:center;grid-template-columns:150px minmax(0,1fr) 150px;}
-  .header-left{align-items:center;}
-  #logoAutocor{height:54px;}
-  .title{font-size:20px;line-height:1.02;}
-  .subtitle{font-size:11px;margin-top:2px;}
-  .meta,.header-right{font-size:10px;line-height:1.2;}
-  /* keep first line together in print */
-  .title-line1{white-space:nowrap;}
-
-  .toolbar,.modal-backdrop{display:none !important;}
+  /* Ocultar elementos de pantalla */
+  .toolbar,.modal-backdrop,.support-wrap,.support-head,.support-body{display:none !important;}
   .screen-input{display:none !important;}
   .screen-only{display:none !important;}
-  .print-value{display:block !important;font-size:12px;white-space:normal;word-break:break-word;line-height:1.15;}
   tr.print-hide{display:none !important;}
+
+  /* Mostrar valores de impresión */
+  .print-value{display:block !important;font-size:11px !important;white-space:normal;word-break:break-word;line-height:1.15;}
+
+  /* Cabecera */
+  .header{align-items:flex-start !important;grid-template-columns:140px minmax(0,1fr) 140px !important;gap:8px !important;padding-bottom:10px !important;}
+  .header-left{align-items:flex-start !important;}
+  #logoAutocor{height:52px !important;}
+  .title{font-size:18px !important;line-height:1.02 !important;}
+  .title-line1{white-space:nowrap !important;}
+  .subtitle{font-size:10px !important;margin-top:2px !important;}
+  .meta,.header-right{font-size:9.5px !important;line-height:1.2 !important;}
+
+  /* Tabla principal */
+  table{font-size:11px !important;}
+  th{padding:5px 6px !important;}
+  td{padding:4px 6px !important;}
+  tr{break-inside:avoid !important;page-break-inside:avoid !important;}
   tr.has-value td{background:#f3f4f6 !important;}
   tr.has-value td:first-child{border-left:3px solid #111827 !important;}
-  @page{size:A4 portrait;margin:12mm;}
+
+  /* Bloques: evitar cortes entre páginas */
+  .top-layout{gap:6px !important;}
+  .form-card{break-inside:avoid !important;page-break-inside:avoid !important;padding:8px 10px !important;box-shadow:none !important;}
+  .veh-fields{break-inside:avoid !important;page-break-inside:avoid !important;padding:8px 10px !important;}
+  .risk-obs-box{break-inside:avoid !important;page-break-inside:avoid !important;padding:8px 10px !important;box-shadow:none !important;}
+  .totalbox{break-inside:avoid !important;page-break-inside:avoid !important;margin-top:6px !important;padding:10px 12px !important;}
+  .glossary{break-inside:avoid !important;page-break-inside:avoid !important;margin-top:10px !important;padding-top:5px !important;}
+  .signature{break-inside:avoid !important;page-break-inside:avoid !important;margin-top:10px !important;padding-top:8px !important;gap:14px !important;
+             display:grid !important;grid-template-columns:1fr 1fr !important;align-items:stretch !important;}
+  .disclaimer{break-inside:avoid !important;page-break-inside:avoid !important;grid-column:1 / -1 !important;}
+  .sigbox{break-inside:avoid !important;page-break-inside:avoid !important;min-height:100px !important;padding:10px !important;width:100% !important;}
+  #noDescontadosBox{break-inside:avoid !important;page-break-inside:avoid !important;}
+
+  /* QR */
+  #qrBoxAsesor{width:116px !important;height:116px !important;padding:6px !important;overflow:visible !important;box-shadow:none !important;border:1px solid #cbd5e1 !important;background:#fff !important;}
+  #qrBoxAsesor img,#qrBoxAsesor canvas{width:104px !important;height:104px !important;max-width:none !important;max-height:none !important;}
+  #qrBoxFooter{padding:2px !important;border-radius:5px !important;}
+
+  /* Riesgo y observaciones en impresión */
+  .screen-risk{display:none !important;}
+  .risk-print{display:flex !important;}
+  .obs-print{display:block !important;}
+  .risk-obs-grid{grid-template-columns:180px 1fr !important;gap:10px !important;}
+  #pv_obs{font-size:9.5px !important;line-height:1.18 !important;}
+  #pv_cliente{white-space:nowrap !important;}
+
+  /* Poppins en título */
+  .title{font-family:'Poppins',sans-serif !important;font-weight:700 !important;}
+
+  /* Datos del vehículo */
+  .auto-box{display:block !important;margin:6px 0 8px !important;padding:8px 10px !important;
+            background:#c2d6ffab !important;box-shadow:none !important;border:1px solid #d1d5db !important;}
+  .auto-title{font-size:11px !important;margin-bottom:6px !important;padding-bottom:3px !important;}
+  .auto-grid{grid-template-columns:1fr 1fr !important;gap:3px 20px !important;font-size:10px !important;line-height:1.15 !important;}
+  .veh-fields{display:none !important;}
+
+  /* Compact print top grid */
+  .top-grid{grid-template-columns:1.1fr .9fr .85fr .8fr !important;gap:8px 10px !important;}
+  .compact-field .print-value{display:flex !important;}
+
+  /* Colores de riesgo en impresión */
+  .risk-bajo{background:#dcfce7 !important;color:#166534 !important;border:1px solid #22c55e !important;}
+  .risk-medio{background:#fef9c3 !important;color:#854d0e !important;border:1px solid #eab308 !important;}
+  .risk-alto{background:#fee2e2 !important;color:#991b1b !important;border:1px solid #ef4444 !important;}
+  .cbtn{display:none !important;}
 }
 
 /* --- Print-fit tweaks (V34) --- */
@@ -209,22 +270,6 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 .disclaimer .screen-only textarea{height:92px;}
 /* Prevent split */
 .signature,.disclaimer,.glossary{break-inside:avoid;page-break-inside:avoid;}
-@media print{
-  .signature{display:grid !important; grid-template-columns:1fr 1fr !important; gap:16px !important; align-items:stretch !important;}
-  .disclaimer{grid-column:1 / -1 !important;}
-  .sigbox{width:100% !important; min-width:0 !important;}
-  .sigbox.sig-asesor, .sigbox:last-child{break-inside:avoid; page-break-inside:avoid;}
-}
-
-@media print{
-  .document{padding:16px;}
-  table{font-size:12px;}
-  th{padding:6px;}
-  td{padding:5px 6px;}
-  .totalbox{margin-top:8px;}
-  @page{size:A4 portrait;margin:10mm;}
-  #qrBoxFooter{padding:2px;border-radius:5px;}
-}
 
 
 /* --- Fix: Declaración en Arial normal (sin negrillas) y justificada --- */
@@ -238,35 +283,14 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 /* --- V38: ocultar campo ASESOR en formulario y CLIENTE en una sola línea --- */
 .hide-field{display:none !important;}
 #pv_cliente{white-space:nowrap !important;}
-@media print{
-  #pv_cliente{white-space:nowrap !important;}
-}
 
-
-/* --- V40: ajustes de impresión (evitar descuadre de título y duplicados) --- */
-@media print{
-  .header{align-items:flex-start !important; gap:10px !important; grid-template-columns:150px minmax(0,1fr) 150px !important;}
-  .header-left{align-items:flex-start !important;}
-  .title{font-size:20px !important; line-height:1.02 !important;}
-  #logoAutocor{height:56px !important;}
-  .meta,.header-right{font-size:10px !important;line-height:1.2 !important;}
-  #qrBoxFooter{padding:2px !important;}
-}
-
-
-/* --- V43: Título en Poppins negrilla (pantalla e impresión) --- */
+/* --- V43: Título en Poppins negrilla (pantalla) --- */
 .title{
   font-family: 'Poppins', sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: 0.8px;
   width:100%;
   text-align:center;
-}
-@media print{
-  .title{
-    font-family: 'Poppins', sans-serif !important;
-    font-weight: 700 !important;
-  }
 }
 /* --- V56: No descontados optimizados (doble columna estilo glosario) --- */
 #noDescontadosBox{
@@ -335,14 +359,6 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   margin-bottom:6px;
 }
 
-@media print{
-  #listaNoDescontados{
-    column-count: 2;
-    column-gap: 24px;
-  }
-}
-
-
 /* --- FIX impresión: No descontados en 2 columnas reales (grid) --- */
 #listaNoDescontados{
   width:100%;
@@ -379,14 +395,6 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 .veh-fields{padding:12px 14px;}
 .veh-fields .field{grid-template-columns:1fr;align-items:start;gap:6px;}
 .veh-fields label{text-transform:uppercase;letter-spacing:.3px;}
-@media print{
-  .auto-box{display:block !important;margin:8px 0 10px 0;padding:10px 12px;background:#c2d6ffab !important;box-shadow:none;border:1px solid #d1d5db !important;}
-  .auto-title{font-size:12px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #cbd5e1;}
-  .auto-grid{grid-template-columns: 1fr 1fr;gap:4px 24px;font-size:11px;line-height:1.15;}
-  .auto-item{break-inside:avoid; page-break-inside:avoid;}
-  .auto-label{font-weight:800;color:#111827;margin-right:8px;display:inline-block;min-width:64px;}
-  .veh-fields{display:none !important;}
-}
 @media (max-width:720px){
   .auto-grid{grid-template-columns:1fr;}
   .auto-item-wide{grid-column:auto;}
@@ -398,9 +406,6 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 
 .risk-obs-box label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
 #obs{font-size:11px !important; line-height:1.22 !important; min-height:64px !important;}
-@media print{
-  #pv_obs{font-size:10px !important; line-height:1.18 !important;}
-}
 /* Valores no descontados - colores bonitos, forzados en impresión por print-color-adjust */
 #noDescontadosBox{
   margin-top:14px !important;
@@ -470,10 +475,8 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 .qr-digital-note{font-size:11px;color:var(--muted);line-height:1.25;text-align:center;width:100%;}
 #qrBoxAsesor{display:flex;align-items:center;justify-content:center;width:96px;height:96px;padding:6px;margin:0 auto;border:1px solid #dbe3ee;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.06);}
 @media (max-width:720px){.risk-obs-grid{grid-template-columns:1fr;}}
-@media print{.top-layout{gap:8px;} .form-card{padding:10px 12px;box-shadow:none;} .top-grid{grid-template-columns:1.15fr .95fr .9fr .85fr;gap:10px 12px;} .compact-field .print-value{display:flex !important;} .risk-obs-box{margin:0;padding:10px 12px;box-shadow:none;break-inside:avoid;page-break-inside:avoid;} .screen-risk{display:none !important;} .risk-print,.obs-print{display:block !important;} .risk-obs-grid{grid-template-columns:190px 1fr;gap:12px;} .qr-digital-note{font-size:10px;} #qrBoxAsesor{width:82px;height:82px;padding:3px;box-shadow:none;} }
-
 .footer-bar{display:none !important;justify-content:flex-end;margin-top:16px;}
-#qrBoxFooter{display:inline-block;padding:6px;border:1px solid #dbe3ee;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.06);} 
+#qrBoxFooter{display:inline-block;padding:6px;border:1px solid #dbe3ee;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.06);}
 @media print{.footer-bar{margin-top:12px;}}
 
 
@@ -491,30 +494,6 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   display:block !important;
   margin:0 auto !important;
 }
-@media print{
-  #qrBoxAsesor{
-    width:116px !important;
-    height:116px !important;
-    padding:6px !important;
-    overflow:visible !important;
-    box-shadow:none !important;
-    border:1px solid #cbd5e1 !important;
-    background:#fff !important;
-  }
-  #qrBoxAsesor img,
-  #qrBoxAsesor canvas{
-    width:104px !important;
-    height:104px !important;
-    max-width:none !important;
-    max-height:none !important;
-  }
-}
-
-
-/* --- Overrides finales de esta versión --- */
-#obs{font-size:11px !important; line-height:1.22 !important; min-height:64px !important;}
-@media print{#pv_obs{font-size:10px !important; line-height:1.18 !important;}}
-
 
 /* --- FIX puntual: riesgo no duplicado en pantalla --- */
 .risk-print,
@@ -528,15 +507,6 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   padding:8px 12px !important;
   border-radius:10px !important;
   box-sizing:border-box !important;
-}
-@media print{
-  .screen-risk{
-    display:none !important;
-  }
-  .risk-print,
-  .obs-print{
-    display:block !important;
-  }
 }
 
 /* --- FIX puntual: campos del vehículo más amplios y normales --- */
@@ -592,32 +562,6 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 }
 
 
-/* === FORZAR COLORES EN IMPRESIÓN (equivalente a activar gráficos de fondo) === */
-@media print {
-  html {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-}
-@media print {
-  .risk-bajo {
-    background: #dcfce7 !important;
-    color: #166534 !important;
-    border: 1px solid #22c55e !important;
-  }
-  .risk-medio {
-    background: #fef9c3 !important;
-    color: #854d0e !important;
-    border: 1px solid #eab308 !important;
-  }
-  .risk-alto {
-    background: #fee2e2 !important;
-    color: #991b1b !important;
-    border: 1px solid #ef4444 !important;
-  }
-}
-
-
 /* --- RIESGO A COLOR EN PANTALLA E IMPRESIÓN --- */
 .risk-print{
   display:none;
@@ -643,26 +587,26 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   color:#991b1b !important;
   border:1px solid #ef4444 !important;
 }
-@media print{
-  .risk-print{
-    display:flex !important;
-  }
-  .risk-print.risk-bajo{
-    background:#dcfce7 !important;
-    color:#166534 !important;
-    border:1px solid #22c55e !important;
-  }
-  .risk-print.risk-medio{
-    background:#fef9c3 !important;
-    color:#854d0e !important;
-    border:1px solid #eab308 !important;
-  }
-  .risk-print.risk-alto{
-    background:#fee2e2 !important;
-    color:#991b1b !important;
-    border:1px solid #ef4444 !important;
-  }
-}
+
+/* ── Sección Prints / Evidencias (Saneamiento) ── */
+.support-wrap{margin-top:24px;background:#fff;border-radius:16px;border:1px solid #d1d5db;box-shadow:0 4px 20px rgba(15,23,42,.07);overflow:hidden;}
+.support-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:#f8fafc;}
+.support-title{font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.4px;}
+.support-help{color:var(--muted);font-size:12px;margin-top:2px;}
+.support-body{padding:16px 18px;}
+.support-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.support-card{border:1px solid #e2e8f0;border-radius:12px;background:#fff;box-shadow:0 2px 8px rgba(15,23,42,.05);overflow:hidden;transition:box-shadow .2s;}
+.support-card:hover{box-shadow:0 6px 18px rgba(15,23,42,.1);}
+.support-card .thumb-wrap{background:#f1f5f9;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.support-card img{width:100%;height:100%;object-fit:contain;display:block;}
+.support-card .meta{padding:10px 12px 12px;}
+.support-card .meta input,.support-card .meta textarea{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:7px 8px;margin-bottom:8px;background:#fff;font:inherit;}
+.support-card .meta input{font-weight:700;text-transform:uppercase;}
+.support-card .meta textarea{min-height:48px;resize:vertical;}
+.support-card .row-actions{display:flex;gap:6px;}
+.support-card .row-actions button{flex:1;padding:5px 6px;font-size:11px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;color:var(--ink);font-weight:700;cursor:pointer;}
+.support-card .row-actions .del-btn{background:#fee2e2;border-color:#fecaca;color:#b91c1c;}
+.empty-support{border:1px dashed #cbd5e1;border-radius:12px;padding:24px;color:var(--muted);font-size:13px;text-align:center;}
 
 </style>
 </head>
@@ -695,8 +639,10 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 
     <button class="green" onclick="preparePrint()">💾 Guardar e Imprimir</button>
     <button class="secondary" onclick="buscarPlacaPrompt()">🔍 Buscar Placa</button>
-    <button class="outline" onclick="abrirModalReporte()">📊 Reportes</button>
     <button class="secondary" onclick="agregarFila()">+ Descuento</button>
+    <button class="secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar Prints</button>
+    <button class="outline" onclick="eliminarTodosLosPrints()" title="Eliminar todos los prints">✕ Prints</button>
+    <input id="printInput" type="file" accept="image/*" multiple style="display:none;">
     <button class="outline" id="btnAdminGlosario" onclick="abrirModalGlosario()" style="display:none;">📖 Glosario</button>
     <button class="outline" onclick="abrirModalVehiculos()">🚗 Vehículos</button>
     <button class="outline" id="btnIniciarSesion" onclick="abrirModal('modalUsuario')">Iniciar sesión</button>
@@ -708,7 +654,7 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 </div><!-- /.nav-sticky -->
 
 <div class="page-body">
-<div id="userBanner" style="display:none;margin:0 0 14px;padding:10px 14px;border-left:3px solid #E53F2E;border-radius:8px;background:#fff3f2;font-size:12px;color:#374151;">⚠️ No hay usuario seleccionado. Puedes llenar la cartilla, pero para <b>Guardar / Buscar / Reportes</b> debes iniciar sesión.</div>
+<div id="userBanner" style="display:none;margin:0 0 14px;padding:10px 14px;border-left:3px solid #E53F2E;border-radius:8px;background:#fff3f2;font-size:12px;color:#374151;">⚠️ No hay usuario seleccionado. Puedes llenar la cartilla, pero para <b>Guardar / Buscar</b> debes iniciar sesión.</div>
 <div class="document">
   <div class="header">
     <div class="header-left"><img id="logoAutocor" alt="Logo AUTOCOR"></div>
@@ -720,9 +666,9 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
       <div class="meta-top"><span class="muted">Cartilla:</span> <b id="numeroCartilla">AUT-000000</b></div>
       <div class="meta-bottom">
         <span class="meta-piece"><span class="muted">Asesor:</span> <b id="asesorHeader">—</b></span>
-        <span class="meta-piece"><span class="muted">Responsables:</span> <b id="responsablesHeader">—</b></span>
-        <span class="meta-piece"><span class="muted">Versión:</span> <span>4.0</span></span>
         <span class="meta-piece"><span class="muted">Generado:</span> <span id="fechaDoc"></span></span>
+        <span class="meta-piece"><span class="muted">Versión:</span> <span>4.5</span></span>
+        <span class="meta-piece"><span class="muted">Responsables:</span> <b id="responsablesHeader">—</b></span>
       </div>
     </div>
   </div>
@@ -938,6 +884,20 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 </div>
 
 </div><!-- /.document -->
+
+<!-- ── Sección Prints / Evidencias ── -->
+<div class="support-wrap" id="supportWrap">
+  <div class="support-head">
+    <div>
+      <div class="support-title">🖼 Evidencias / Prints — PDF Saneamiento</div>
+      <div class="support-help">Estas imágenes se incluyen en <b>SANEAMIENTO (PLACA).pdf</b>. No aparecen en la Liquidación. También puedes pegar capturas con <b>Ctrl+V</b>.</div>
+    </div>
+  </div>
+  <div class="support-body">
+    <div id="supportGrid" class="support-grid"></div>
+  </div>
+</div>
+
 </div><!-- /.page-body -->
 
 <!-- Modal: Usuario -->
@@ -951,12 +911,12 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
       <div class="notice" style="margin-bottom:10px;">Ingresa tu usuario y tu clave. Los administradores pueden resetear claves; cada usuario puede cambiar la suya.</div>
       <div class="field" style="grid-template-columns:120px 1fr;">
         <label>USUARIO</label>
-        <div><input id="usuarioLogin" class="screen-input" placeholder="Ej: YROMERO"></div>
+        <div><input id="usuarioLogin" class="screen-input" placeholder="Ej: YROMERO" autocomplete="off"></div>
       </div>
       <div class="field" style="grid-template-columns:120px 1fr;margin-top:10px;">
         <label>CLAVE</label>
         <div style="position:relative;display:flex;align-items:center;">
-          <input id="passwordLogin" type="password" class="screen-input" placeholder="Tu contraseña" style="padding-right:38px;width:100%;">
+          <input id="passwordLogin" type="password" class="screen-input" placeholder="Tu contraseña" autocomplete="new-password" style="padding-right:38px;width:100%;">
           <button type="button" onclick="togglePass('passwordLogin',this)" style="position:absolute;right:6px;background:none;border:none;box-shadow:none;padding:4px;color:#6b7280;font-size:16px;cursor:pointer;line-height:1;">👁</button>
         </div>
       </div>
@@ -1659,6 +1619,7 @@ async function confirmarUsuario(){
     token: resp.sessionToken || ""
   });
 
+  $("usuarioLogin").value = "";
   $("passwordLogin").value = "";
   cerrarModal("modalUsuario");
   requireUser();
@@ -1921,7 +1882,7 @@ function crearFila(concepto="", monto=0, obs=""){
   const tr=document.createElement("tr");
   tr.innerHTML=`
     <td>
-      <input class="screen-input concept-input" value="${escapeHtml(concepto)}" oninput="calcular()">
+      <input class="screen-input concept-input" autocomplete="off" value="${escapeHtml(concepto)}" oninput="calcular()">
       <div class="print-value"></div>
     </td>
     <td>
@@ -1932,7 +1893,7 @@ function crearFila(concepto="", monto=0, obs=""){
       <div class="print-value"></div>
     </td>
     <td>
-      <input class="screen-input" value="${escapeHtml(obs)}" oninput="calcular()">
+      <input class="screen-input" autocomplete="off" value="${escapeHtml(obs)}" oninput="calcular()">
       <div class="print-value"></div>
     </td>`;
   tbody.appendChild(tr);
@@ -2983,7 +2944,7 @@ async function preparePrint(){
     const placa = upperTrim(data.placa);
 
     if(!placa){
-      alert("Debe ingresar la PLACA antes de imprimir.");
+      alert("Debe ingresar la PLACA antes de generar los PDFs.");
       return;
     }
 
@@ -3001,11 +2962,25 @@ async function preparePrint(){
       currentDocIsExisting = true;
     }
 
-    __clearAfterPrint = true;
-    actualizarTituloPorPlaca();
     calcular();
     syncPrintValues();
     syncAutoBox();
+
+    // ── 1. PDF Saneamiento (solo si hay prints cargados) ──
+    if(supportPrints.length > 0){
+      try{
+        await generarPDFSaneamiento(placa);
+      }catch(esan){
+        console.error("Error PDF Saneamiento:", esan);
+        if(!confirm("No se pudo generar el PDF de Saneamiento:\n" + esan.message + "\n\n¿Continuar igualmente con la impresión de la Liquidación?")){
+          return;
+        }
+      }
+    }
+
+    // ── 2. PDF Liquidación (diálogo de impresión del navegador) ──
+    __clearAfterPrint = true;
+    document.title = `LIQUIDACION (${placa})`;
     renderQr(function(){
       setTimeout(function(){
         forceQrForPdf(function(){
@@ -3038,6 +3013,283 @@ if(declEl){
   declEl.addEventListener("change", ()=>{ saveDeclTemplate(); syncPrintValues(); });
 }
 
+/* =======================================================
+   PRINTS / EVIDENCIAS  →  PDF SANEAMIENTO
+   ======================================================= */
+let supportPrints = [];
+
+function _loadImgPromise(src){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload  = () => res(img);
+    img.onerror = rej;
+    img.src = src;
+  });
+}
+
+function handlePrintFiles(files){
+  const list = Array.from(files || []).filter(f => f.type.startsWith('image/'));
+  if(!list.length) return;
+  let pending = list.length;
+  list.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      supportPrints.push({ title:`PRINT ${supportPrints.length + 1}`, note:'', src:e.target.result, mime:file.type || 'image/png' });
+      pending--;
+      if(pending === 0) renderSupportPrints();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderSupportPrints(){
+  const grid = document.getElementById('supportGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  if(!supportPrints.length){
+    grid.innerHTML = `<div class="empty-support">Sin prints cargados. Usa <b>🖼 Agregar Prints</b> o pega capturas con <b>Ctrl+V</b>.</div>`;
+    return;
+  }
+  supportPrints.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'support-card';
+    card.innerHTML = `
+      <div class="thumb-wrap"><img src="${item.src}" alt="Print ${i+1}"></div>
+      <div class="meta">
+        <input type="text" autocomplete="off" value="${escapeHtml(item.title || `PRINT ${i+1}`)}" placeholder="Título" oninput="updateSupportField(${i},'title',this.value)">
+        <textarea placeholder="Observación (opcional)" oninput="updateSupportField(${i},'note',this.value)">${escapeHtml(item.note || '')}</textarea>
+        <div class="row-actions">
+          <button onclick="moverPrint(${i},-1)">↑</button>
+          <button onclick="moverPrint(${i},1)">↓</button>
+          <button class="del-btn" onclick="eliminarPrint(${i})">✕ Eliminar</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function updateSupportField(i, field, val){ if(supportPrints[i]) supportPrints[i][field] = val; }
+function eliminarPrint(i){ supportPrints.splice(i, 1); renderSupportPrints(); }
+function moverPrint(i, dir){
+  const ni = i + dir;
+  if(ni < 0 || ni >= supportPrints.length) return;
+  [supportPrints[i], supportPrints[ni]] = [supportPrints[ni], supportPrints[i]];
+  renderSupportPrints();
+}
+function eliminarTodosLosPrints(){
+  if(!supportPrints.length) return;
+  if(!confirm('¿Eliminar todos los prints cargados?')) return;
+  supportPrints = [];
+  renderSupportPrints();
+}
+
+/* ── Generación PDF Saneamiento ── */
+async function generarPDFSaneamiento(placa){
+  const jsPDFLib = window.jspdf;
+  const h2c     = window.html2canvas;
+  if(!jsPDFLib || !h2c){
+    throw new Error('Las librerías de PDF aún se están cargando. Espera unos segundos e inténtalo de nuevo.');
+  }
+  const { jsPDF } = jsPDFLib;
+
+  /* --- Datos del formulario --- */
+  const fecha        = document.getElementById('fecha')?.value || '';
+  const marca        = upperTrim(document.getElementById('marca')?.value  || '');
+  const modelo       = upperTrim(document.getElementById('modelo')?.value || '');
+  const obsText      = (document.getElementById('obs')?.value || '').trim();
+  const totalDesc    = (document.getElementById('total')?.textContent        || '0.00').trim();
+  const totalVT      = (document.getElementById('totalValorToma')?.textContent || '0.00').trim();
+  const totalPagar   = (document.getElementById('totalPagar')?.textContent   || '0.00').trim();
+
+  let fechaFmt = fecha;
+  try{ if(fecha){ const [yy,mm,dd] = fecha.split('-'); fechaFmt = `${dd}/${mm}/${yy}`; } }catch(e){}
+
+  const logoData = localStorage.getItem('autocor_logo') || '';
+  const logoHtml = logoData
+    ? `<img src="${logoData}" style="height:44px;object-fit:contain;display:block;max-width:130px;">`
+    : `<span style="font-family:Arial,sans-serif;font-weight:900;font-size:20px;color:#E53F2E;letter-spacing:1px;">AUTOCOR</span>`;
+
+  /* --- Filas con valor > 0 --- */
+  const itemsConValor = [...tbody.querySelectorAll('tr')]
+    .filter(r => moneyParse(r.querySelector('.money-input').value) > 0);
+
+  const itemsHTML = itemsConValor.length
+    ? itemsConValor.map(r => {
+        const concepto = r.children[0].querySelector('input')?.value || '';
+        const monto    = moneyParse(r.querySelector('.money-input').value);
+        const obs      = r.children[2].querySelector('input')?.value  || '';
+        return `<tr>
+          <td style="border:1px solid #d1d5db;padding:6px 10px;font-size:11px;">${escapeHtml(concepto)}</td>
+          <td style="border:1px solid #d1d5db;padding:6px 8px;font-size:11px;text-align:center;white-space:nowrap;">$ ${moneyFormat(monto)}</td>
+          <td style="border:1px solid #d1d5db;padding:6px 8px;font-size:11px;">${escapeHtml(obs)}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="3" style="border:1px solid #d1d5db;padding:8px;text-align:center;font-size:11px;color:#6b7280;">Sin valores registrados</td></tr>`;
+
+  /* --- Filas de observaciones (hasta 3 líneas del campo Obs) --- */
+  const obsLines = ['', '', ''];
+  if(obsText){ obsText.split('\n').slice(0, 3).forEach((l, k) => { obsLines[k] = l; }); }
+  const obsRowsHTML = obsLines.map(line => `
+    <div style="display:flex;align-items:center;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:7px;padding:7px 12px;min-height:32px;">
+      <span style="color:#E53F2E;font-weight:900;font-size:16px;margin-right:8px;line-height:1;flex-shrink:0;">»</span>
+      <span style="flex:1;font-size:11px;color:#374151;">${escapeHtml(line)}</span>
+    </div>`).join('');
+
+  /* --- Template HTML de la carátula --- */
+  const sanHTML = `<div style="width:793px;background:#fff;padding:28px 30px 32px;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;color:#111827;">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+    <div style="font-size:8.5px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;line-height:1.4;">DEPARTAMENTO DE MESA DE CONTROL LEGAL - AUTOCOR</div>
+    ${logoHtml}
+  </div>
+  <div style="border-top:2.5px solid #E53F2E;margin-bottom:20px;"></div>
+
+  <h2 style="text-align:center;font-size:28px;font-weight:800;color:#111827;margin:0 0 20px;letter-spacing:0.2px;">[ Saneamiento Vehicular ]</h2>
+
+  <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+    <thead>
+      <tr>
+        <th style="background:#17181b;color:#fff;padding:8px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:28%;">FECHA</th>
+        <th style="background:#17181b;color:#fff;padding:8px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:44%;">MARCA | MODELO</th>
+        <th style="background:#17181b;color:#fff;padding:8px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:28%;">PLACA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border:1px solid #e5e7eb;padding:9px 10px;text-align:center;font-size:12px;">${escapeHtml(fechaFmt)}</td>
+        <td style="border:1px solid #e5e7eb;padding:9px 10px;text-align:center;font-size:12px;font-weight:700;">${escapeHtml(marca)}${marca && modelo ? ' | ' : ''}${escapeHtml(modelo)}</td>
+        <td style="border:1px solid #e5e7eb;padding:9px 10px;text-align:center;font-size:14px;font-weight:900;">${escapeHtml(placa)}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="text-align:center;font-size:20px;font-weight:700;color:#111827;margin:0 0 14px;">[ Valores Pendientes de Pago ]</h3>
+
+  <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+    <thead>
+      <tr>
+        <th style="background:#1f2125;color:#fff;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:55%;">CONCEPTO</th>
+        <th style="background:#1f2125;color:#fff;padding:7px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:20%;">MONTO USD</th>
+        <th style="background:#1f2125;color:#fff;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:25%;">OBSERVACIÓN</th>
+      </tr>
+    </thead>
+    <tbody>${itemsHTML}</tbody>
+  </table>
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;min-width:290px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:5px;">
+        <span style="color:#6b7280;font-weight:700;">VALOR DE TOMA:</span>
+        <span style="font-weight:800;margin-left:16px;">$ ${totalVT}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:10px;">
+        <span style="color:#6b7280;font-weight:700;">TOTAL DESCUENTOS:</span>
+        <span style="font-weight:800;margin-left:16px;">$ ${totalDesc}</span>
+      </div>
+      <div style="border-top:1px solid #e5e7eb;padding-top:10px;display:flex;justify-content:space-between;align-items:baseline;font-size:15px;">
+        <span style="font-weight:900;">TOTAL A PAGAR:</span>
+        <span style="font-weight:900;margin-left:16px;">$ ${totalPagar}</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="text-align:center;font-size:17px;font-weight:700;color:#111827;margin:0 0 12px;">[ Observaciones Generales ]</h3>
+  ${obsRowsHTML}
+
+</div>`;
+
+  /* --- Capturar carátula y generar PDF --- */
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-9;pointer-events:none;';
+  wrap.innerHTML = sanHTML;
+  document.body.appendChild(wrap);
+
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const pageW = 210, pageH = 297;
+
+  try{
+    const cvs = await h2c(wrap.firstElementChild, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      width: 793,
+      windowWidth: 793
+    });
+
+    const imgW  = pageW;
+    const imgH  = (cvs.height * pageW) / cvs.width;
+    const imgDt = cvs.toDataURL('image/jpeg', 0.93);
+
+    if(imgH <= pageH){
+      doc.addImage(imgDt, 'JPEG', 0, 0, imgW, imgH);
+    } else {
+      let yOff = 0, rem = imgH;
+      while(rem > 0){
+        if(yOff > 0) doc.addPage();
+        doc.addImage(imgDt, 'JPEG', 0, -yOff, imgW, imgH, '', 'FAST');
+        yOff += pageH;
+        rem  -= pageH;
+      }
+    }
+
+    /* --- Páginas de prints --- */
+    for(let i = 0; i < supportPrints.length; i++){
+      doc.addPage();
+      const print = supportPrints[i];
+      const title = (print.title || `PRINT ${i+1}`).toUpperCase();
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(107, 114, 128);
+      doc.text(`SANEAMIENTO — ${placa} | ${title} (${i+1}/${supportPrints.length})`, 14, 11);
+      doc.setDrawColor(229, 63, 46);
+      doc.setLineWidth(0.6);
+      doc.line(14, 14.5, 196, 14.5);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(17, 24, 39);
+      doc.text(title, 14, 23);
+
+      const imgStartY = 27;
+      const hasNote   = print.note && print.note.trim();
+      const maxW = 182, maxH = hasNote ? 238 : 258;
+
+      try{
+        const imgEl = await _loadImgPromise(print.src);
+        const ratio = imgEl.naturalWidth / imgEl.naturalHeight;
+        let iw = maxW, ih = maxW / ratio;
+        if(ih > maxH){ ih = maxH; iw = ih * ratio; }
+        const ix  = 14 + (maxW - iw) / 2;
+        const ext = (print.mime || '').toLowerCase().includes('jpeg') || print.src.startsWith('data:image/jpeg') ? 'JPEG' : 'PNG';
+        doc.addImage(print.src, ext, ix, imgStartY, iw, ih, '', 'FAST');
+
+        if(hasNote){
+          const ny = imgStartY + ih + 6;
+          doc.setFillColor(248, 250, 252);
+          doc.setDrawColor(229, 231, 235);
+          doc.setLineWidth(0.3);
+          doc.roundedRect(14, ny, 182, 12, 2, 2, 'FD');
+          doc.setTextColor(107, 114, 128);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8.5);
+          doc.text(String(print.note).trim().substring(0, 200), 18, ny + 8, { maxWidth: 174 });
+        }
+      }catch(eImg){
+        doc.setTextColor(180, 0, 0);
+        doc.setFontSize(10);
+        doc.text('Error al cargar la imagen', 14, imgStartY + 20);
+      }
+    }
+
+    doc.save(`SANEAMIENTO (${placa}).pdf`);
+
+  }finally{
+    try{ wrap.remove(); }catch(e){}
+  }
+}
+
 /* Init */
 (async function initApp(){
   // Ejecutar todo lo local inmediatamente (no depende del servidor)
@@ -3048,6 +3300,7 @@ if(declEl){
   syncPrintValues();
   syncAutoBox();
   renderAuthUI();
+  renderSupportPrints();
 
   // Mostrar la UI de login o cartilla de inmediato sin esperar al servidor
   if(currentUser && authToken){
@@ -3113,6 +3366,22 @@ if(loginPassEl){
     if(e.key === "Enter"){ e.preventDefault(); confirmarUsuario(); }
   });
 }
+
+// ── File input prints ──
+document.getElementById('printInput')?.addEventListener('change', function(){
+  handlePrintFiles(this.files);
+  this.value = '';
+});
+
+// ── Pegar capturas con Ctrl+V ──
+document.addEventListener('paste', function(e){
+  const items = Array.from((e.clipboardData || {}).items || []);
+  const files  = items
+    .filter(it => it.type && it.type.startsWith('image/'))
+    .map(it => it.getAsFile())
+    .filter(Boolean);
+  if(files.length) handlePrintFiles(files);
+});
 
 </script>
 
