@@ -93,6 +93,30 @@
   .status-bar.error{border-left-color:#b91c1c;color:#b91c1c;background:#fff1f1;}
   .status-bar.ok{border-left-color:#16a34a;color:#15803d;}
 
+  /* ── Cabecera del cuadro capturado: logo + responsables ── */
+  .pag-doc-header td{
+    background:var(--dark);padding:9px 12px;vertical-align:middle;
+  }
+  #pagosLogoImg{
+    height:38px;display:none;object-fit:contain;
+    filter:brightness(0) invert(1);vertical-align:middle;
+  }
+  .pag-title-cell{
+    font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;
+    color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.5px;
+    text-align:right;padding-right:4px;
+  }
+  .pag-doc-inforow td{
+    padding:6px 12px;font-size:11px;background:#f8fafc;
+  }
+  .pag-doc-inforow .label{
+    font-weight:700;color:#374151;background:#f1f5f9;font-size:11px;
+    width:17%;
+  }
+  .pag-doc-inforow .info-val{
+    font-weight:700;color:#111827;font-size:11px;
+  }
+
   /* ── BODY ── */
   .page-body{padding:16px 24px 32px;}
 
@@ -336,6 +360,7 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
+    <img id="topbarLogoPagos" class="topbar-logo" src="" alt="AUTOCOR">
     <div class="topbar-module">Pagos</div>
   </div>
   <div class="topbar-right">
@@ -374,6 +399,18 @@
           <col style="width:46%">
         </colgroup>
 
+        <!-- Cabecera: logo + módulo -->
+        <tr class="pag-doc-header">
+          <td style="width:34%;"><img id="pagosLogoImg" alt="AUTOCOR"></td>
+          <td colspan="3" class="pag-title-cell">Pagos · Control Legal</td>
+        </tr>
+        <!-- Info: realizado por + responsable(s) -->
+        <tr class="pag-doc-inforow">
+          <td class="label">Realizado por:</td>
+          <td class="value info-val"><span id="realizadoPorDisplay">—</span></td>
+          <td class="label">Responsable(s):</td>
+          <td class="value info-val"><span id="responsablesDisplay">—</span></td>
+        </tr>
         <tr><th colspan="4" class="top-dark"><input id="depTitle" class="center" type="text" value="DEPARTAMENTO DE MESA DE CONTROL LEGAL - AUTOCOR"></th></tr>
         <tr>
           <td class="dictamen-label">DICTAMEN LEGAL FINAL:</td>
@@ -525,9 +562,30 @@ function togglePass(inputId, btn){
 function abrirModal(id){ document.getElementById(id).style.display = 'flex'; }
 function cerrarModal(id){ document.getElementById(id).style.display = 'none'; }
 
+function cargarLogo(){
+  const data = localStorage.getItem('autocor_logo');
+  const logo1 = document.getElementById('pagosLogoImg');
+  const logo2 = document.getElementById('topbarLogoPagos');
+  if(data){
+    if(logo1){ logo1.src = data; logo1.style.display = 'block'; }
+    if(logo2){ logo2.src = data; logo2.style.display = 'block'; }
+  }
+}
+
+function actualizarInfoHeader(){
+  const rdp = document.getElementById('realizadoPorDisplay');
+  if(rdp) rdp.textContent = currentUser || '—';
+  const rsp = document.getElementById('responsablesDisplay');
+  if(rsp){
+    const rv = document.getElementById('responsableValue');
+    rsp.textContent = (rv && rv.value) ? rv.value : '—';
+  }
+}
+
 function renderAuthUI(){
   document.getElementById('btnIniciarSesion').style.display = currentUser ? 'none' : 'inline-block';
   document.getElementById('btnCerrarSesion').style.display = currentUser ? 'inline-block' : 'none';
+  actualizarInfoHeader();
 }
 
 function saveAuthState(obj){
@@ -811,6 +869,9 @@ function cargarFormularioPago(data){
   responsableValue.value = data.responsableValue || '';
   clienteValue.value = data.clienteValue || '';
   dictamenValue.value = data.dictamenValue || dictamenValue.value;
+
+  // Sincronizar cabecera visual
+  actualizarInfoHeader();
 
   document.getElementById('tbodyDocs').innerHTML = '';
   document.getElementById('tbodySri').innerHTML = '';
@@ -1106,12 +1167,18 @@ function restablecerBase(){
   supportPrints = [];
   fillBase();
   renderSupportPrints();
+  actualizarInfoHeader();
   setStatus('FORMATO RESTABLECIDO');
 }
 
 document.getElementById('printInput').addEventListener('change', function(){
   handlePrintFiles(this.files);
   this.value = '';
+});
+
+document.getElementById('responsableValue').addEventListener('input', function(){
+  const rsp = document.getElementById('responsablesDisplay');
+  if(rsp) rsp.textContent = this.value.trim() || '—';
 });
 
 document.addEventListener('paste', function(e){
@@ -1124,6 +1191,7 @@ document.addEventListener('paste', function(e){
 });
 
 bindUppercaseInputs(document);
+cargarLogo();
 fillBase();
 renderSupportPrints();
 renderAuthUI();

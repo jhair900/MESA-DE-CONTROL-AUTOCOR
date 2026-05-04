@@ -80,6 +80,20 @@ button.outline:hover{background:rgba(255,255,255,.08);color:#fff;}
 /* ── WRAPPER ── */
 .page-body{padding:24px;max-width:960px;margin:0 auto;}
 
+/* ── STATUS BAR ── */
+#statusBar{
+  display:inline-block;
+  margin:0 0 14px;
+  padding:8px 16px;
+  border-radius:10px;
+  background:#fff;
+  border-left:4px solid var(--brand);
+  font-size:12px;font-weight:700;color:var(--ink);
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+#statusBar.sb-error{border-left-color:#b91c1c;color:#b91c1c;background:#fff1f1;}
+#statusBar.sb-ok{border-left-color:#16a34a;color:#15803d;background:#f0fdf4;}
+
 .document{background:var(--card);border:1px solid #d1d5db;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(15,23,42,.07);}
 
 /* ── HEADER DEL DOCUMENTO ── */
@@ -182,7 +196,7 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   .document{box-shadow:none !important;border:none !important;border-radius:0 !important;padding:12px 14px !important;}
 
   /* Ocultar elementos de pantalla */
-  .toolbar,.modal-backdrop,.support-wrap,.support-head,.support-body{display:none !important;}
+  .toolbar,.modal-backdrop,.support-wrap,.support-head,.support-body,#statusBar{display:none !important;}
   .screen-input{display:none !important;}
   .screen-only{display:none !important;}
   tr.print-hide{display:none !important;}
@@ -654,6 +668,7 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 </div><!-- /.nav-sticky -->
 
 <div class="page-body">
+<div id="statusBar">LISTO</div>
 <div id="userBanner" style="display:none;margin:0 0 14px;padding:10px 14px;border-left:3px solid #E53F2E;border-radius:8px;background:#fff3f2;font-size:12px;color:#374151;">⚠️ No hay usuario seleccionado. Puedes llenar la cartilla, pero para <b>Guardar / Buscar</b> debes iniciar sesión.</div>
 <div class="document">
   <div class="header">
@@ -1598,6 +1613,14 @@ function requireUser(){
   return true;
 }
 
+/* ── STATUS BAR ─────────────────────────────────────────────── */
+function setStatus(msg, isError, isOk){
+  const el = document.getElementById('statusBar');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = isError ? 'sb-error' : isOk ? 'sb-ok' : '';
+}
+
 async function confirmarUsuario(){
   const u = ($("usuarioLogin").value || "").trim().toUpperCase();
   const p = ($("passwordLogin").value || "").trim();
@@ -1627,9 +1650,11 @@ async function confirmarUsuario(){
   renderQr();
 
   if(resp.user?.mustChangePassword){
+    setStatus('SESIÓN INICIADA — DEBES CAMBIAR TU CLAVE', false, false);
     alert("Debes cambiar tu clave ahora.");
     abrirModalCambioClave();
   } else {
+    setStatus('SESIÓN INICIADA CORRECTAMENTE', false, true);
     alert("Sesión iniciada correctamente.");
   }
 }
@@ -1648,6 +1673,7 @@ function cerrarSesion(){
   $("numeroCartilla").textContent=defaultCartilla();
   document.getElementById("userBanner").style.display="block";
   renderAuthUI();
+  setStatus('SESIÓN CERRADA');
   alert("Sesión cerrada.");
 }
 
@@ -2164,6 +2190,8 @@ async function guardar(){
     return;
   }
 
+  setStatus('GUARDANDO LIQUIDACIÓN...');
+
   data.placa = placa;
   data.asesor = currentUser || data.asesor || "";
   data.tipoDocumento = document.getElementById("tipoDocumento")?.value || "cartilla";
@@ -2180,6 +2208,7 @@ async function guardar(){
 
   syncPrintValues();
   renderQr();
+  setStatus('GUARDADO CORRECTAMENTE — ' + placa, false, true);
   alert("Liquidación guardada/actualizada correctamente para: " + placa);
   limpiar();
   await renderReporte();
@@ -2217,9 +2246,11 @@ async function buscarPlaca(placaRaw){
     return;
   }
 
+  setStatus('BUSCANDO PLACA ' + placa + '...');
   const resp = await apiCall("getByPlaca", { placa });
   window.__loadedRecord = resp.data || null;
   cargarFormularioDesdeData(resp.data, placa);
+  setStatus('CARGADO DESDE LÍNEA — ' + placa, false, true);
 }
 
 function _escapeRegExp(s){return String(s||"").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");}
@@ -2969,9 +3000,12 @@ async function preparePrint(){
     // ── 1. PDF Saneamiento (solo si hay prints cargados) ──
     if(supportPrints.length > 0){
       try{
+        setStatus('GENERANDO PDF SANEAMIENTO...');
         await generarPDFSaneamiento(placa);
+        setStatus('PDF SANEAMIENTO GENERADO', false, true);
       }catch(esan){
         console.error("Error PDF Saneamiento:", esan);
+        setStatus('ERROR AL GENERAR PDF SANEAMIENTO', true);
         if(!confirm("No se pudo generar el PDF de Saneamiento:\n" + esan.message + "\n\n¿Continuar igualmente con la impresión de la Liquidación?")){
           return;
         }
@@ -2979,6 +3013,7 @@ async function preparePrint(){
     }
 
     // ── 2. PDF Liquidación (diálogo de impresión del navegador) ──
+    setStatus('ABRIENDO DIÁLOGO DE IMPRESIÓN...');
     __clearAfterPrint = true;
     document.title = `LIQUIDACION (${placa})`;
     renderQr(function(){
@@ -2991,6 +3026,7 @@ async function preparePrint(){
   }catch(e){
     __clearAfterPrint = false;
     console.error(e);
+    setStatus('ERROR AL PROCESAR — VERIFIQUE LOS DATOS', true);
     alert("No se pudo guardar antes de imprimir.");
   }
 }
@@ -3304,6 +3340,7 @@ async function generarPDFSaneamiento(placa){
 
   // Mostrar la UI de login o cartilla de inmediato sin esperar al servidor
   if(currentUser && authToken){
+    setStatus('SESIÓN RECUPERADA — CARGANDO...', false, false);
     requireUser();
     // Lanzar llamadas al servidor EN PARALELO, sin bloquear la pantalla
     Promise.all([
@@ -3311,8 +3348,10 @@ async function generarPDFSaneamiento(placa){
       generarNumeroCartilla()
     ]).then(function(){
       renderQr();
-    }).catch(function(e){ console.error("Error en carga inicial:", e); });
+      setStatus('LISTO', false, true);
+    }).catch(function(e){ console.error("Error en carga inicial:", e); setStatus('LISTO'); });
   } else {
+    setStatus('DEBES INICIAR SESIÓN PARA GUARDAR Y BUSCAR');
     // Cargar glosario en segundo plano aunque no haya sesión
     loadGlossaryFromServer().catch(function(e){ console.error(e); });
     document.getElementById("userBanner").style.display="block";
