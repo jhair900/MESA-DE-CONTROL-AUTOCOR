@@ -1017,9 +1017,9 @@ async function exportarImagenes(placa){
 
   // Nombres base:
   // - folderName : solo la placa → usada como nombre del ZIP y carpeta interna
-  // - cuadroName : "PAGOS (PLACA).png" → nombre del cuadro dentro de la carpeta
-  const folderName = `(${placa})`;
-  const cuadroName = `PAGOS (${placa}).png`;
+  // - cuadroName : "PAGOS PLACA.png" → nombre del cuadro dentro de la carpeta
+  const folderName = placa;
+  const cuadroName = `PAGOS ${placa}.png`;
 
   // ── 1. Captura del cuadro principal ──────────────────────────────────────
   setStatus('CAPTURANDO CUADRO PRINCIPAL...');
