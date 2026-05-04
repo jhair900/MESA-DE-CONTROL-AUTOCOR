@@ -104,7 +104,7 @@
   .pag-title-cell{
     font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;
     color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.5px;
-    text-align:right;padding-right:4px;
+    text-align:center;padding-right:4px;
   }
   .pag-doc-inforow td{
     padding:6px 12px;font-size:11px;background:#f8fafc;
@@ -408,7 +408,7 @@
         <tr class="pag-doc-inforow">
           <td class="label">Realizado por:</td>
           <td class="value info-val"><span id="realizadoPorDisplay">—</span></td>
-          <td class="label">Responsable(s):</td>
+          <td class="label">Editado por:</td>
           <td class="value info-val"><span id="responsablesDisplay">—</span></td>
         </tr>
         <tr><th colspan="4" class="top-dark"><input id="depTitle" class="center" type="text" value="DEPARTAMENTO DE MESA DE CONTROL LEGAL - AUTOCOR"></th></tr>
@@ -547,6 +547,9 @@ const AUTO_OBS = {
 };
 
 let supportPrints = [];
+let pagosCreador = '';
+let pagosHistorial = [];
+let pagosIsExisting = false;
 let authState = null;
 try{ authState = JSON.parse(sessionStorage.getItem("autocor_auth") || "null"); }catch(e){ authState = null; }
 let currentUser = authState?.user || "";
@@ -562,24 +565,48 @@ function togglePass(inputId, btn){
 function abrirModal(id){ document.getElementById(id).style.display = 'flex'; }
 function cerrarModal(id){ document.getElementById(id).style.display = 'none'; }
 
+function normalizeUserTag(u){
+  return String(u || '').trim().toUpperCase();
+}
+
+function uniqueUserList(list){
+  const out = [];
+  const seen = new Set();
+  (Array.isArray(list) ? list : []).forEach(u => {
+    const x = normalizeUserTag(u);
+    if(x && !seen.has(x)){ seen.add(x); out.push(x); }
+  });
+  return out;
+}
+
 function cargarLogo(){
   const data = localStorage.getItem('autocor_logo');
+  const src = data || 'logo.png';
   const logo1 = document.getElementById('pagosLogoImg');
   const logo2 = document.getElementById('topbarLogoPagos');
-  if(data){
-    if(logo1){ logo1.src = data; logo1.style.display = 'block'; }
-    if(logo2){ logo2.src = data; logo2.style.display = 'block'; }
+  if(logo1){ logo1.src = src; logo1.style.display = 'block'; }
+  if(logo2){ logo2.src = src; logo2.style.display = 'block'; }
+}
+
+function getPreviewHistorialPagos(){
+  // Muestra el historial completo incluyendo el usuario actual como preview
+  if(pagosIsExisting){
+    return uniqueUserList([...(pagosHistorial || []), currentUser]);
   }
+  return uniqueUserList([currentUser]);
+}
+
+function buildEditadoPorLabel(){
+  const hist = getPreviewHistorialPagos();
+  return hist.length ? hist.join(' / ') : '—';
 }
 
 function actualizarInfoHeader(){
   const rdp = document.getElementById('realizadoPorDisplay');
-  if(rdp) rdp.textContent = currentUser || '—';
+  // "Realizado por" = primer guardador; si es nuevo muestra currentUser como preview
+  if(rdp) rdp.textContent = pagosCreador || normalizeUserTag(currentUser) || '—';
   const rsp = document.getElementById('responsablesDisplay');
-  if(rsp){
-    const rv = document.getElementById('responsableValue');
-    rsp.textContent = (rv && rv.value) ? rv.value : '—';
-  }
+  if(rsp) rsp.textContent = buildEditadoPorLabel();
 }
 
 function renderAuthUI(){
@@ -815,6 +842,14 @@ function tableRowsToDataVal(tbodyId){
 }
 
 function obtenerDatosPago(){
+  // Construir historial acumulativo igual que liquidación
+  const historial = pagosIsExisting
+    ? uniqueUserList([...(pagosHistorial || []), currentUser])
+    : uniqueUserList([currentUser]);
+
+  const creador = historial[0] || normalizeUserTag(currentUser);
+  const editor  = historial.length > 1 ? historial[historial.length - 1] : '';
+
   return {
     depTitle: depTitle.value,
     riskTitle: riskTitle.value,
@@ -824,6 +859,9 @@ function obtenerDatosPago(){
     responsableValue: responsableValue.value,
     clienteValue: clienteValue.value,
     dictamenValue: dictamenValue.value,
+    asesorCreador: creador,
+    asesorEditor: editor,
+    historialUsuarios: historial,
     docs: tableRowsToDataDocs(),
     sri: tableRowsToDataVal('tbodySri'),
     matricula: tableRowsToDataVal('tbodyMatricula')
@@ -856,7 +894,14 @@ async function guardarCuadroEnLinea(){
   }
   document.getElementById('placaValue').value = placa;
   const data = obtenerDatosPago();
-  await apiCall('savePago', { data });
+  const resp = await apiCall('savePago', { data });
+  // Actualizar estado local desde la respuesta autoritativa del servidor
+  if(resp && resp.data){
+    pagosHistorial = uniqueUserList(resp.data.historialUsuarios || [resp.data.asesorCreador, resp.data.asesorEditor]);
+    pagosCreador   = pagosHistorial[0] || resp.data.asesorCreador || normalizeUserTag(currentUser);
+    pagosIsExisting = true;
+    actualizarInfoHeader();
+  }
   return placa;
 }
 
@@ -869,6 +914,14 @@ function cargarFormularioPago(data){
   responsableValue.value = data.responsableValue || '';
   clienteValue.value = data.clienteValue || '';
   dictamenValue.value = data.dictamenValue || dictamenValue.value;
+
+  // Restaurar historial de creador/editores igual que liquidación
+  pagosHistorial = uniqueUserList(
+    data.historialUsuarios ||
+    [data.asesorCreador, data.asesorEditor]
+  );
+  pagosCreador    = pagosHistorial[0] || normalizeUserTag(data.asesorCreador || '');
+  pagosIsExisting = pagosHistorial.length > 0;
 
   // Sincronizar cabecera visual
   actualizarInfoHeader();
@@ -1165,6 +1218,9 @@ function restablecerBase(){
   clienteValue.value = '';
   dictamenValue.value = 'REVISIÓN MANUAL';
   supportPrints = [];
+  pagosCreador = '';
+  pagosHistorial = [];
+  pagosIsExisting = false;
   fillBase();
   renderSupportPrints();
   actualizarInfoHeader();
@@ -1174,11 +1230,6 @@ function restablecerBase(){
 document.getElementById('printInput').addEventListener('change', function(){
   handlePrintFiles(this.files);
   this.value = '';
-});
-
-document.getElementById('responsableValue').addEventListener('input', function(){
-  const rsp = document.getElementById('responsablesDisplay');
-  if(rsp) rsp.textContent = this.value.trim() || '—';
 });
 
 document.addEventListener('paste', function(e){

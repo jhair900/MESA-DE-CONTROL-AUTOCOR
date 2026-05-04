@@ -725,11 +725,23 @@ function savePago_(data, session) {
     const placa = normalizePlaca_(data.placaValue || data.placa);
     if (!placa) return { ok: false, message: 'La placa es obligatoria.' };
 
+    // Leer data existente para fusionar historial correctamente
+    let existingData = null;
+    const row = findRowByPlaca_(sheet, placa);
+    if (row > 0) {
+      const existingJson = sheet.getRange(row, 6).getValue();
+      existingData = existingJson ? JSON.parse(existingJson) : null;
+    }
+
+    // Construir historial acumulativo: existente + entrante + sesión actual
+    const history = buildHistory_(existingData, data, session.user);
     data.placaValue = placa;
     data.placa = placa;
+    data.historialUsuarios = history;
+    data.asesorCreador = firstUser_(history);   // primer guardador
+    data.asesorEditor = lastEditor_(history);   // último editor
     if (!data.responsableValue) data.responsableValue = session.user;
 
-    const row = findRowByPlaca_(sheet, placa);
     const rowData = [
       placa,
       data.responsableValue || session.user || '',
@@ -759,6 +771,13 @@ function getPagoByPlaca_(placa, session) {
 
     const json = sheet.getRange(row, 6).getValue();
     const data = JSON.parse(json || '{}');
+
+    // Reconstruir historial desde los campos guardados
+    const history = buildHistory_(data, {}, null);
+    data.historialUsuarios = history;
+    data.asesorCreador = firstUser_(history);
+    data.asesorEditor = lastEditor_(history);
+
     if (!data.responsableValue) data.responsableValue = session.user || '';
     return { ok: true, data: data, openedBy: session.user };
   } catch (err) {
