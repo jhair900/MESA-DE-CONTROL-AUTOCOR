@@ -399,6 +399,7 @@
   <button class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + Exportar</button>
   <button class="btn-secondary" onclick="buscarPorPlacaPrompt()">🔍 Buscar Placa</button>
   <button class="btn-secondary" onclick="agregarFilaDocumento()">+ Documento</button>
+  <button class="btn-secondary" onclick="deshacerUltimaFila('tbodyDocs', docsVentasBase.length)">↩ Deshacer doc.</button>
   <button class="btn-tercero" onclick="agregarTercero()">👤 Pago con Terceras Personas</button>
   <button class="btn-secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar prints</button>
   <button class="btn-danger" onclick="eliminarTodosLosPrints()">✕ Eliminar prints</button>
@@ -573,7 +574,6 @@ const docsVentasBase = [
 
 // ── Documentos base de cada cuadro de tercera persona ───────────
 const terceroDocsBase = [
-  ['VALORES PAGADOS', '', ''],
   ['CONOZCA SU CLIENTE (APARTADO 6 DEL PRINCIPAL)', '', ''],
   ['RESPALDOS DE LICITUD', '', ''],
   ['CARTA DE AUTORIZACIÓN', '', ''],
@@ -826,6 +826,18 @@ function agregarFilaDocumento(){
   addDocRow(['','',''], 'tbodyDocs');
 }
 
+// Agrega fila extra en un cuadro de tercero
+function agregarFilaTercero(tbodyId){
+  addDocRow(['','',''], tbodyId);
+}
+
+// Elimina la última fila solo si supera el número de filas base
+function deshacerUltimaFila(tbodyId, baseCount){
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody || tbody.rows.length <= baseCount) return;
+  tbody.deleteRow(tbody.rows.length - 1);
+}
+
 // ── Terceras personas ────────────────────────────────────────────
 function agregarTercero(){
   const t = { id: Date.now() };
@@ -865,10 +877,15 @@ function renderUnTercero(t, num){
   div.innerHTML = `
     <div class="tercero-toolbar">
       <span class="tercero-num-label">TERCERA PERSONA #${num}</span>
-      <button class="btn-danger"
-        style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;
-               cursor:pointer;border:none;color:#fff;"
-        onclick="eliminarTercero(${t.id})">✕ Eliminar</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #d1d5db;background:#fff;color:#374151;"
+          onclick="agregarFilaTercero('tbodyT_${t.id}')">+ Doc.</button>
+        <button style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #d1d5db;background:#fff;color:#374151;"
+          onclick="deshacerUltimaFila('tbodyT_${t.id}', terceroDocsBase.length)">↩ Deshacer</button>
+        <button class="btn-danger"
+          style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:none;color:#fff;"
+          onclick="eliminarTercero(${t.id})">✕ Eliminar</button>
+      </div>
     </div>
     <div id="captureT_${t.id}">
       <table>

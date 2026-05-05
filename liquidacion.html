@@ -172,6 +172,9 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
 .modal-header h3{margin:0;font-size:14px}
 .modal-body{padding:12px 14px;max-height:70vh;overflow:auto;}
 .modal-close{background:#111827;border:none;color:#fff;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px;}
+.modal-preview{width:min(820px,100%);}
+.preview-img-wrap{background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:65vh;}
+.preview-img-wrap img{max-width:100%;max-height:65vh;object-fit:contain;display:block;}
 .searchbox{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
 .searchbox input{flex:1;min-width:220px;border:1px solid #cbd5e1;padding:9px;border-radius:10px;font-size:13px;}
 .table-mini{width:100%;border-collapse:collapse;font-size:13px;}
@@ -3092,9 +3095,8 @@ function renderSupportPrints(){
     card.innerHTML = `
       <div class="thumb-wrap"><img src="${item.src}" alt="Print ${i+1}"></div>
       <div class="meta">
-        <input type="text" autocomplete="off" value="${escapeHtml(item.title || `PRINT ${i+1}`)}" placeholder="Título" oninput="updateSupportField(${i},'title',this.value)">
-        <textarea placeholder="Observación (opcional)" oninput="updateSupportField(${i},'note',this.value)">${escapeHtml(item.note || '')}</textarea>
         <div class="row-actions">
+          <button onclick="previsualizarPrint(${i})">👁 Ver</button>
           <button onclick="moverPrint(${i},-1)">↑</button>
           <button onclick="moverPrint(${i},1)">↓</button>
           <button class="del-btn" onclick="eliminarPrint(${i})">✕ Eliminar</button>
@@ -3117,6 +3119,14 @@ function eliminarTodosLosPrints(){
   if(!confirm('¿Eliminar todos los prints cargados?')) return;
   supportPrints = [];
   renderSupportPrints();
+}
+
+function previsualizarPrint(index){
+  const item = supportPrints[index];
+  if(!item) return;
+  document.getElementById('previewPrintImg').src                = item.src;
+  document.getElementById('previewPrintModalTitle').textContent = `PRINT ${index + 1}`;
+  abrirModal('modalPrintPreview');
 }
 
 /* ── Generación PDF Saneamiento ── */
@@ -3444,6 +3454,21 @@ document.addEventListener('paste', function(e){
 </script>
 
 
+
+<!-- Modal vista previa de print -->
+<div class="modal-backdrop" id="modalPrintPreview">
+  <div class="modal modal-preview">
+    <div class="modal-header">
+      <h3 id="previewPrintModalTitle">VISTA PREVIA</h3>
+      <button class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
+    </div>
+    <div class="modal-body">
+      <div class="preview-img-wrap">
+        <img id="previewPrintImg" src="" alt="Vista previa del print">
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

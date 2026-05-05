@@ -293,6 +293,9 @@
     background:var(--dark);color:#fff;border:none;
     padding:7px 11px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;
   }
+  .modal-preview{width:min(820px,100%) !important;}
+  .preview-img-wrap{background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:65vh;}
+  .preview-img-wrap img{max-width:100%;max-height:65vh;object-fit:contain;display:block;}
   .field{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:8px;margin-top:10px;}
   .field label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;}
   .field input{
@@ -373,6 +376,7 @@
   <button class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + Exportar</button>
   <button class="btn-secondary" onclick="buscarPorPlacaPrompt()">🔍 Buscar Placa</button>
   <button class="btn-secondary" onclick="agregarFilaDocumento()">+ Documento</button>
+  <button class="btn-secondary" onclick="deshacerUltimaFila()">↩ Deshacer doc.</button>
   <button class="btn-secondary" onclick="agregarFilaValidacion('tbodySri')">+ Validación SRI/ANT</button>
   <button class="btn-secondary" onclick="agregarFilaValidacion('tbodyMatricula')">+ Validación Matrícula</button>
   <button class="btn-secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar prints</button>
@@ -823,6 +827,12 @@ function updateDictamenAutomatico(){
 }
 
 function agregarFilaDocumento(){ addDocRow(['','','']); }
+
+function deshacerUltimaFila(){
+  const tbody = document.getElementById('tbodyDocs');
+  if(!tbody || tbody.rows.length <= docsBase.length) return;
+  tbody.deleteRow(tbody.rows.length - 1);
+}
 function agregarFilaValidacion(tbodyId){ addValRow(tbodyId, ['','','']); }
 
 function tableRowsToDataDocs(){
@@ -981,9 +991,8 @@ function renderSupportPrints(){
     card.innerHTML = `
       <div class="thumb-wrap"><img src="${item.src}" alt="Print ${index+1}"></div>
       <div class="meta">
-        <input type="text" value="${escapeHtml(item.title || `PRINT ${index+1}`)}" placeholder="Título del print" oninput="updateSupportField(${index}, 'title', this.value)">
-        <textarea placeholder="Observación del respaldo" oninput="updateSupportField(${index}, 'note', this.value)">${escapeHtml(item.note || '')}</textarea>
         <div class="row-actions">
+          <button class="btn-secondary" type="button" onclick="previsualizarPrint(${index})">👁 Ver</button>
           <button class="btn-secondary" type="button" onclick="moverPrint(${index}, -1)">↑</button>
           <button class="btn-secondary" type="button" onclick="moverPrint(${index}, 1)">↓</button>
           <button class="del-btn" type="button" onclick="eliminarPrint(${index})">✕ Eliminar</button>
@@ -1009,6 +1018,14 @@ function eliminarTodosLosPrints(){
   if(!confirm('¿Eliminar todos los prints cargados?')) return;
   supportPrints = [];
   renderSupportPrints();
+}
+
+function previsualizarPrint(index){
+  const item = supportPrints[index];
+  if(!item) return;
+  document.getElementById('previewPrintImg').src                = item.src;
+  document.getElementById('previewPrintModalTitle').textContent = `PRINT ${index + 1}`;
+  abrirModal('modalPrintPreview');
 }
 
 function moverPrint(index, direction){
@@ -1307,5 +1324,20 @@ function setColor(thId, colorClass){
   });
 }
 </script>
+<!-- Modal vista previa de print -->
+<div class="modal-backdrop" id="modalPrintPreview">
+  <div class="modal modal-preview">
+    <div class="modal-header">
+      <h3 id="previewPrintModalTitle">VISTA PREVIA</h3>
+      <button class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
+    </div>
+    <div class="modal-body">
+      <div class="preview-img-wrap">
+        <img id="previewPrintImg" src="" alt="Vista previa del print">
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
