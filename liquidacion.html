@@ -3167,9 +3167,9 @@ async function generarPDFSaneamiento(placa){
   let fechaFmt = fecha;
   try{ if(fecha){ const [yy,mm,dd] = fecha.split('-'); fechaFmt = `${dd}/${mm}/${yy}`; } }catch(e){}
 
-  const logoData = localStorage.getItem('autocor_logo') || '';
+  const logoData = localStorage.getItem('autocor_logo') || (typeof fallbackLogo !== 'undefined' ? fallbackLogo : '');
   const logoHtml = logoData
-    ? `<img src="${logoData}" style="height:48px;object-fit:contain;display:block;max-width:150px;">`
+    ? `<img src="${logoData}" style="height:52px;object-fit:contain;display:block;max-width:160px;">`
     : `<span style="font-family:Arial,sans-serif;font-weight:900;font-size:22px;color:#E53F2E;letter-spacing:1.5px;">AUTOCOR</span>`;
 
   /* --- Filas con valor > 0 --- */
@@ -3254,15 +3254,34 @@ async function generarPDFSaneamiento(placa){
     </div>
   </div>`;
 
+  /* --- Datos del encabezado dinámico --- */
+  const _now = new Date();
+  const _p2 = n => String(n).padStart(2, '0');
+  const _genStr = `${_p2(_now.getDate())}/${_p2(_now.getMonth()+1)}/${_now.getFullYear()} ${_p2(_now.getHours())}:${_p2(_now.getMinutes())}`;
+  const _responsables = escapeHtml(
+    (typeof getResponsablesTexto === 'function' ? getResponsablesTexto() : '') || currentUser || '—'
+  );
+
   /* --- Template HTML de la carátula --- */
   const sanHTML = `<div style="width:793px;background:#fff;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;color:#111827;">
 
   <!-- ── Encabezado ── -->
-  <div style="background:#fff;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb;">
+  <div style="background:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb;">
     <div>${logoHtml}</div>
     <div style="text-align:right;">
       <div style="font-size:7.5px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;line-height:1.6;">Departamento de Mesa de Control Legal</div>
       <div style="font-size:9.5px;color:#111827;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;margin-top:2px;">AUTOCOR</div>
+      <div style="margin-top:6px;padding-top:5px;border-top:1px solid #f3f4f6;">
+        <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
+          <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Generado:&nbsp;</span>${_genStr}
+        </div>
+        <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
+          <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Versión:&nbsp;</span>4.8
+        </div>
+        <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
+          <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Responsables:&nbsp;</span>${_responsables}
+        </div>
+      </div>
     </div>
   </div>
   <div style="height:4px;background:#E53F2E;"></div>
