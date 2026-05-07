@@ -3267,20 +3267,23 @@ async function generarPDFSaneamiento(placa){
 
   <!-- ── Encabezado ── -->
   <div style="background:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb;">
-    <div>${logoHtml}</div>
-    <div style="text-align:center;">
-      <div style="font-size:7.5px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;line-height:1.6;">Departamento de Mesa de Control Legal</div>
-      <div style="font-size:9.5px;color:#111827;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;margin-top:2px;">AUTOCOR</div>
-      <div style="margin-top:6px;padding-top:5px;border-top:1px solid #f3f4f6;">
-        <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
-          <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Generado:&nbsp;</span>${_genStr}
-        </div>
-        <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
-          <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Versión:&nbsp;</span>4.8
-        </div>
-        <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
-          <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Responsables:&nbsp;</span>${_responsables}
-        </div>
+    <!-- Logo -->
+    <div style="flex-shrink:0;">${logoHtml}</div>
+    <!-- Título central -->
+    <div style="flex:1;text-align:center;padding:0 18px;">
+      <div style="font-size:13px;font-weight:900;color:#111827;text-transform:uppercase;letter-spacing:1px;line-height:1.3;">Saneamiento Autocor</div>
+      <div style="font-size:7.5px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;margin-top:3px;">Control de Saneamientos / Área Legal</div>
+    </div>
+    <!-- Info dinámica -->
+    <div style="flex-shrink:0;text-align:right;">
+      <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
+        <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Generado:&nbsp;</span>${_genStr}
+      </div>
+      <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
+        <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Versión:&nbsp;</span>4.8
+      </div>
+      <div style="font-size:6.8px;color:#6b7280;line-height:2;white-space:nowrap;">
+        <span style="font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.3px;">Responsables:&nbsp;</span>${_responsables}
       </div>
     </div>
   </div>
