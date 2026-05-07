@@ -373,17 +373,17 @@
 
 <!-- TOOLBAR -->
 <div class="toolbar-wrap">
-  <button class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + Exportar</button>
-  <button class="btn-secondary" onclick="buscarPorPlacaPrompt()">🔍 Buscar Placa</button>
-  <button class="btn-secondary" onclick="agregarFilaDocumento()">+ Documento</button>
-  <button class="btn-secondary" onclick="deshacerUltimaFila()">↩ Deshacer doc.</button>
-  <button class="btn-secondary" onclick="agregarFilaValidacion('tbodySri')">+ Validación SRI/ANT</button>
-  <button class="btn-secondary" onclick="agregarFilaValidacion('tbodyMatricula')">+ Validación Matrícula</button>
-  <button class="btn-secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar prints</button>
-  <button class="btn-danger" onclick="eliminarTodosLosPrints()">✕ Eliminar prints</button>
-  <button class="btn-outline" onclick="restablecerBase()">↺ Restablecer</button>
-  <button class="btn-outline" id="btnIniciarSesion" onclick="abrirModal('modalUsuario')">Iniciar sesión</button>
-  <button class="btn-outline" id="btnCerrarSesion" onclick="cerrarSesion()" style="display:none;">Cerrar sesión</button>
+  <button type="button" class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + Exportar</button>
+  <button type="button" class="btn-secondary" onclick="buscarPorPlacaPrompt()">🔍 Buscar Placa</button>
+  <button type="button" class="btn-secondary" onclick="agregarFilaDocumento()">+ Documento</button>
+  <button type="button" class="btn-secondary" onclick="deshacerUltimaFila()">↩ Deshacer doc.</button>
+  <button type="button" class="btn-secondary" onclick="agregarFilaValidacion('tbodySri')">+ Validación SRI/ANT</button>
+  <button type="button" class="btn-secondary" onclick="agregarFilaValidacion('tbodyMatricula')">+ Validación Matrícula</button>
+  <button type="button" class="btn-secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar prints</button>
+  <button type="button" class="btn-danger" onclick="eliminarTodosLosPrints()">✕ Eliminar prints</button>
+  <button type="button" class="btn-outline" onclick="restablecerBase()">↺ Restablecer</button>
+  <button type="button" class="btn-outline" id="btnIniciarSesion" onclick="abrirModal('modalUsuario')">Iniciar sesión</button>
+  <button type="button" class="btn-outline" id="btnCerrarSesion" onclick="cerrarSesion()" style="display:none;">Cerrar sesión</button>
   <input id="printInput" class="hidden-input" type="file" accept="image/*" multiple>
 </div>
 
@@ -477,7 +477,7 @@
     </div>
   </div>
 
-  <div class="page-footer">AUTOCOR · Mesa de Control Legal &nbsp;·&nbsp; Ctrl+V para pegar capturas de pantalla</div>
+  <div class="page-footer">AUTOCOR · Mesa de Control Legal &nbsp;·&nbsp; Ctrl+V para pegar capturas de pantalla &nbsp;·&nbsp; <span style="opacity:.6;">v4.8</span></div>
 
 </div>
 
@@ -486,7 +486,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Iniciar sesión</h3>
-      <button class="modal-close" onclick="cerrarModal('modalUsuario')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalUsuario')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="notice">Ingresa tu usuario y clave para guardar y buscar cuadros de pago.</div>
@@ -502,7 +502,7 @@
         </div>
       </div>
       <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
-        <button onclick="confirmarUsuario()" style="background:var(--brand);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;">Ingresar</button>
+        <button type="button" onclick="confirmarUsuario()" style="background:var(--brand);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;">Ingresar</button>
       </div>
     </div>
   </div>
@@ -1329,7 +1329,7 @@ function setColor(thId, colorClass){
   <div class="modal modal-preview">
     <div class="modal-header">
       <h3 id="previewPrintModalTitle">VISTA PREVIA</h3>
-      <button class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="preview-img-wrap">

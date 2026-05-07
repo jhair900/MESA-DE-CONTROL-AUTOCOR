@@ -516,7 +516,7 @@
               <h2>Liquidaciones</h2>
               <p>Gestiona y revisa las liquidaciones de vehículos de forma rápida y segura.</p>
               <div class="actions">
-                <button class="btn red" onclick="abrirLogin('liquidacion')">
+                <button type="button" class="btn red" onclick="abrirLogin('liquidacion')">
                   <span>INGRESAR</span>
                   <span class="arrow">›</span>
                 </button>
@@ -533,7 +533,7 @@
               <h2>Pagos</h2>
               <p>Valida y controla los pagos y documentos legales de cada vehículo.</p>
               <div class="actions">
-                <button class="btn silver" onclick="abrirLogin('pagos')">
+                <button type="button" class="btn silver" onclick="abrirLogin('pagos')">
                   <span>INGRESAR</span>
                   <span class="arrow">›</span>
                 </button>
@@ -559,7 +559,7 @@
               <h2>Ventas</h2>
               <p>Registro y seguimiento del proceso de venta de vehículos.</p>
               <div class="actions">
-                <button class="btn dark" onclick="abrirLogin('ventas')">
+                <button type="button" class="btn dark" onclick="abrirLogin('ventas')">
                   <span>INGRESAR</span>
                   <span class="arrow">›</span>
                 </button>
@@ -627,13 +627,13 @@
       </div>
     </section>
 
-    <div class="footer-note">AUTOCOR · Inicio de módulos</div>
+    <div class="footer-note">AUTOCOR · Inicio de módulos &nbsp;·&nbsp; <span style="opacity:.6;">v4.8</span></div>
   </main>
 
   <!-- ── Modal login compartido ───────────────────────────────── -->
   <div id="modalLogin" class="mv-overlay" role="dialog" aria-modal="true" aria-labelledby="mlTitle">
     <div class="mv-box">
-      <button class="mv-close" onclick="cerrarLogin()" aria-label="Cerrar">×</button>
+      <button type="button" class="mv-close" onclick="cerrarLogin()" aria-label="Cerrar">×</button>
       <div class="mv-icon-head">
         <svg viewBox="0 0 24 24">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -662,14 +662,14 @@
         </div>
       </div>
       <div id="mlError" class="mv-error"></div>
-      <button id="mlBtnIngresar" class="mv-btn" onclick="confirmarLogin()">INGRESAR</button>
+      <button type="button" id="mlBtnIngresar" class="mv-btn" onclick="confirmarLogin()">INGRESAR</button>
     </div>
   </div>
 
   <!-- ── Modal módulo en desarrollo (Ventas) ──────────────────── -->
   <div id="modalVentasDev" class="mv-overlay" role="dialog" aria-modal="true">
     <div class="mv-box">
-      <button class="mv-close" onclick="cerrarModalDev()" aria-label="Cerrar">×</button>
+      <button type="button" class="mv-close" onclick="cerrarModalDev()" aria-label="Cerrar">×</button>
       <div class="mv-icon-head" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
         <svg viewBox="0 0 24 24">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
@@ -685,7 +685,7 @@
       <p class="mv-dev-body" style="font-size:13px;color:#9ca3af">
         Si necesitas acceso anticipado, contacta al administrador del sistema.
       </p>
-      <button class="mv-btn" onclick="cerrarModalDev()"
+      <button type="button" class="mv-btn" onclick="cerrarModalDev()"
               style="background:linear-gradient(135deg,#374151,#111827);box-shadow:0 10px 24px rgba(0,0,0,.24)">
         CERRAR
       </button>

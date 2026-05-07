@@ -654,19 +654,19 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   </select>
 </label>
 
-    <button class="green" onclick="preparePrint()">💾 Guardar e Imprimir</button>
-    <button class="secondary" onclick="buscarPlacaPrompt()">🔍 Buscar Placa</button>
-    <button class="secondary" onclick="agregarFila()">+ Descuento</button>
-    <button class="secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar Prints</button>
-    <button class="outline" onclick="eliminarTodosLosPrints()" title="Eliminar todos los prints">✕ Prints</button>
+    <button type="button" class="green" onclick="preparePrint()">💾 Guardar e Imprimir</button>
+    <button type="button" class="secondary" onclick="buscarPlacaPrompt()">🔍 Buscar Placa</button>
+    <button type="button" class="secondary" onclick="agregarFila()">+ Descuento</button>
+    <button type="button" class="secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar Prints</button>
+    <button type="button" class="outline" onclick="eliminarTodosLosPrints()" title="Eliminar todos los prints">✕ Prints</button>
     <input id="printInput" type="file" accept="image/*" multiple style="display:none;">
-    <button class="outline" id="btnAdminGlosario" onclick="abrirModalGlosario()" style="display:none;">📖 Glosario</button>
-    <button class="outline" onclick="abrirModalVehiculos()">🚗 Vehículos</button>
-    <button class="outline" id="btnIniciarSesion" onclick="abrirModal('modalUsuario')">Iniciar sesión</button>
-    <button class="outline" id="btnCerrarSesion" onclick="cerrarSesion()" style="display:none;">Cerrar sesión</button>
-    <button class="outline" id="btnCambiarUsuario" onclick="cambiarUsuario()" style="display:none;">Cambiar usuario</button>
-    <button class="outline" id="btnCambiarClave" onclick="abrirModalCambioClave()" style="display:none;">Cambiar clave</button>
-    <button class="outline" id="btnAdminUsuarios" onclick="abrirModalAdminUsuarios()" style="display:none;">Admin usuarios</button>
+    <button type="button" class="outline" id="btnAdminGlosario" onclick="abrirModalGlosario()" style="display:none;">📖 Glosario</button>
+    <button type="button" class="outline" onclick="abrirModalVehiculos()">🚗 Vehículos</button>
+    <button type="button" class="outline" id="btnIniciarSesion" onclick="abrirModal('modalUsuario')">Iniciar sesión</button>
+    <button type="button" class="outline" id="btnCerrarSesion" onclick="cerrarSesion()" style="display:none;">Cerrar sesión</button>
+    <button type="button" class="outline" id="btnCambiarUsuario" onclick="cambiarUsuario()" style="display:none;">Cambiar usuario</button>
+    <button type="button" class="outline" id="btnCambiarClave" onclick="abrirModalCambioClave()" style="display:none;">Cambiar clave</button>
+    <button type="button" class="outline" id="btnAdminUsuarios" onclick="abrirModalAdminUsuarios()" style="display:none;">Admin usuarios</button>
 </div>
 </div><!-- /.nav-sticky -->
 
@@ -685,7 +685,7 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
       <div class="meta-bottom">
         <span class="meta-piece"><span class="muted">Asesor:</span> <b id="asesorHeader">—</b></span>
         <span class="meta-piece"><span class="muted">Generado:</span> <span id="fechaDoc"></span></span>
-        <span class="meta-piece"><span class="muted">Versión:</span> <span>4.5</span></span>
+        <span class="meta-piece"><span class="muted">Versión:</span> <span>4.8</span></span>
         <span class="meta-piece"><span class="muted">Responsables:</span> <b id="responsablesHeader">—</b></span>
       </div>
     </div>
@@ -819,7 +819,9 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
         <div>
           <label>CLASIFICACIÓN DE RIESGO</label>
           <select class="screen-input screen-risk" id="riesgo">
-            <option>BAJO</option><option>MEDIO</option><option>ALTO</option>
+            <option value="BAJO">BAJO</option>
+            <option value="MEDIO">MEDIO</option>
+            <option value="ALTO">ALTO</option>
           </select>
           <div class="risk-print" id="pv_riesgo"></div>
         </div>
@@ -923,7 +925,7 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   <div class="modal" style="width:min(520px,100%);">
     <div class="modal-header">
       <h3>Iniciar sesión</h3>
-      <button class="modal-close" onclick="cerrarModal('modalUsuario')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalUsuario')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="notice" style="margin-bottom:10px;">Ingresa tu usuario y tu clave. Los administradores pueden resetear claves; cada usuario puede cambiar la suya.</div>
@@ -939,7 +941,7 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
         </div>
       </div>
       <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
-        <button class="green" onclick="confirmarUsuario()">Ingresar</button>
+        <button type="button" class="green" onclick="confirmarUsuario()">Ingresar</button>
       </div>
       <div class="notice" style="margin-top:10px;">Si un administrador te resetea la clave, entra con la temporal y luego usa “Cambiar clave”.</div>
     </div>
@@ -951,32 +953,32 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   <div class="modal" style="width:min(520px,100%);">
     <div class="modal-header">
       <h3>Cambiar mi clave</h3>
-      <button class="modal-close" onclick="cerrarModal('modalCambioClave')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalCambioClave')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="field" style="grid-template-columns:150px 1fr;">
         <label>CLAVE ACTUAL</label>
         <div style="position:relative;display:flex;align-items:center;">
-          <input id="claveActual" type="password" class="screen-input" style="padding-right:38px;width:100%;">
+          <input id="claveActual" type="password" class="screen-input" autocomplete="current-password" style="padding-right:38px;width:100%;">
           <button type="button" onclick="togglePass('claveActual',this)" style="position:absolute;right:6px;background:none;border:none;box-shadow:none;padding:4px;color:#6b7280;font-size:16px;cursor:pointer;line-height:1;">👁</button>
         </div>
       </div>
       <div class="field" style="grid-template-columns:150px 1fr;margin-top:10px;">
         <label>NUEVA CLAVE</label>
         <div style="position:relative;display:flex;align-items:center;">
-          <input id="claveNueva" type="password" class="screen-input" style="padding-right:38px;width:100%;">
+          <input id="claveNueva" type="password" class="screen-input" autocomplete="new-password" style="padding-right:38px;width:100%;">
           <button type="button" onclick="togglePass('claveNueva',this)" style="position:absolute;right:6px;background:none;border:none;box-shadow:none;padding:4px;color:#6b7280;font-size:16px;cursor:pointer;line-height:1;">👁</button>
         </div>
       </div>
       <div class="field" style="grid-template-columns:150px 1fr;margin-top:10px;">
         <label>CONFIRMAR CLAVE</label>
         <div style="position:relative;display:flex;align-items:center;">
-          <input id="claveNueva2" type="password" class="screen-input" style="padding-right:38px;width:100%;">
+          <input id="claveNueva2" type="password" class="screen-input" autocomplete="new-password" style="padding-right:38px;width:100%;">
           <button type="button" onclick="togglePass('claveNueva2',this)" style="position:absolute;right:6px;background:none;border:none;box-shadow:none;padding:4px;color:#6b7280;font-size:16px;cursor:pointer;line-height:1;">👁</button>
         </div>
       </div>
       <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
-        <button class="green" onclick="guardarNuevaClave()">Guardar clave</button>
+        <button type="button" class="green" onclick="guardarNuevaClave()">Guardar clave</button>
       </div>
     </div>
   </div>
@@ -987,7 +989,7 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   <div class="modal" style="width:min(900px,100%);">
     <div class="modal-header">
       <h3>Administración de usuarios</h3>
-      <button class="modal-close" onclick="cerrarModal('modalAdminUsuarios')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalAdminUsuarios')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="notice" style="margin-bottom:10px;">Solo administradores. Desde aquí puedes ver usuarios y resetear sus claves.</div>
@@ -1006,12 +1008,12 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   <div class="modal">
     <div class="modal-header">
       <h3>Placas registradas (usuario actual)</h3>
-      <button class="modal-close" onclick="cerrarModal('modalPlacas')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalPlacas')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="searchbox">
         <input id="plateFilter" placeholder="Buscar placa o cliente..." oninput="renderListaPlacas()">
-        <button class="smallbtn gray" onclick="copiarTodasPlacas()">Copiar lista</button>
+        <button type="button" class="smallbtn gray" onclick="copiarTodasPlacas()">Copiar lista</button>
       </div>
       <table class="table-mini">
         <thead>
@@ -1029,13 +1031,13 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   <div class="modal">
     <div class="modal-header">
       <h3>Administrar glosario</h3>
-      <button class="modal-close" onclick="cerrarModal('modalGlosario')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalGlosario')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="searchbox">
         <input id="glossFilter" placeholder="Buscar término..." oninput="renderListaGlosario()">
-        <button class="smallbtn green" onclick="nuevoTermino()">Agregar término</button>
-        <button class="smallbtn gray" onclick="restaurarGlosarioBase()">Restaurar base</button>
+        <button type="button" class="smallbtn green" onclick="nuevoTermino()">Agregar término</button>
+        <button type="button" class="smallbtn gray" onclick="restaurarGlosarioBase()">Restaurar base</button>
       </div>
       <table class="table-mini">
         <thead>
@@ -1053,14 +1055,14 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   <div class="modal">
     <div class="modal-header">
       <h3>Vehículos (base local de este navegador)</h3>
-      <button class="modal-close" onclick="cerrarModal('modalVehiculos')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalVehiculos')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="searchbox">
         <input id="vehFilter" placeholder="Buscar por placa, marca, modelo, chasis o color..." oninput="renderVehiculos()">
-        <button class="smallbtn green" onclick="nuevoVehiculo()">Agregar vehículo</button>
-        <button class="smallbtn gray" onclick="importarVehiculos()">Importar JSON</button>
-        <button class="smallbtn gray" onclick="exportarVehiculos()">Exportar JSON</button>
+        <button type="button" class="smallbtn green" onclick="nuevoVehiculo()">Agregar vehículo</button>
+        <button type="button" class="smallbtn gray" onclick="importarVehiculos()">Importar JSON</button>
+        <button type="button" class="smallbtn gray" onclick="exportarVehiculos()">Exportar JSON</button>
       </div>
       <table class="table-mini">
         <thead>
@@ -1087,14 +1089,14 @@ tr.has-value td:first-child{border-left:3px solid #E53F2E;}
   <div class="modal">
     <div class="modal-header">
       <h3>Reporte de cartillas</h3>
-      <button class="modal-close" onclick="cerrarModal('modalReporte')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalReporte')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="searchbox">
         <input id="reportFilter" placeholder="Filtrar por placa, cliente o asesor..." oninput="renderReporte()">
-        <button class="smallbtn gray" onclick="setReporteModo('mio')">Mis cartillas</button>
-        <button class="smallbtn gray" onclick="setReporteModo('general')">Reporte general</button>
-        <button class="smallbtn gray" onclick="copiarReporte()">Copiar reporte</button>
+        <button type="button" class="smallbtn gray" onclick="setReporteModo('mio')">Mis cartillas</button>
+        <button type="button" class="smallbtn gray" onclick="setReporteModo('general')">Reporte general</button>
+        <button type="button" class="smallbtn gray" onclick="copiarReporte()">Copiar reporte</button>
       </div>
       <table class="table-mini">
         <thead>
@@ -1234,9 +1236,9 @@ function renderVehiculos(){
       <td>${escapeHtml(v.motor||"")}</td>
       <td>
         <div class="row-actions">
-          <button class="smallbtn" onclick="cargarVehiculoDesdeModal('${escapeJs(v.placa||"")}')">Usar</button>
-          <button class="smallbtn green" onclick="editarVehiculo('${escapeJs(v.placa||"")}')">Editar</button>
-          <button class="smallbtn red" onclick="eliminarVehiculo('${escapeJs(v.placa||"")}')">Eliminar</button>
+          <button type="button" class="smallbtn" onclick="cargarVehiculoDesdeModal('${escapeJs(v.placa||"")}')">Usar</button>
+          <button type="button" class="smallbtn green" onclick="editarVehiculo('${escapeJs(v.placa||"")}')">Editar</button>
+          <button type="button" class="smallbtn red" onclick="eliminarVehiculo('${escapeJs(v.placa||"")}')">Eliminar</button>
         </div>
       </td>`;
     tb.appendChild(tr);
@@ -1755,7 +1757,7 @@ async function renderUsuariosAdmin(){
       <td>${u.isAdmin ? "Sí" : "No"}</td>
       <td>${u.isActive ? "Sí" : "No"}</td>
       <td>${u.mustChangePassword ? "Sí" : "No"}</td>
-      <td><button class="smallbtn red" onclick="resetClaveAdmin('${escapeJs(u.username || "")}')">Resetear clave</button></td>
+      <td><button type="button" class="smallbtn red" onclick="resetClaveAdmin('${escapeJs(u.username || "")}')">Resetear clave</button></td>
     `;
     tb.appendChild(tr);
   });
@@ -2004,9 +2006,21 @@ function generarNoDescontados(){
     const concepto = (r.children[0].querySelector("input").value || "").trim();
 
     // Aparece en VALORES NO DESCONTADOS si la observación contiene un número > 0
+    // Excepción: años 2020-2030 solos no se trasladan (solo si van acompañados de valor monetario)
+    const YEARS_EXCLUIDOS = new Set([2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]);
     const obsNumMatch = obs.match(/[\d.,]+/);
     const obsNum = obsNumMatch ? parseFloat(obsNumMatch[0].replace(/,/g, '')) : 0;
-    if(obs !== "" && obsNum > 0){
+
+    function esSoloAnio(texto, num){
+      if(!YEARS_EXCLUIDOS.has(num)) return false;          // no es un año excluido
+      if(texto.includes('$')) return false;                 // tiene símbolo monetario → acompañado
+      const todosNums = (texto.match(/[\d.,]+/g) || [])
+        .map(n => parseFloat(n.replace(/,/g,'')));
+      const tieneValorMonetario = todosNums.some(n => n > 0 && !YEARS_EXCLUIDOS.has(n));
+      return !tieneValorMonetario;                          // solo si NO hay otro número que no sea año
+    }
+
+    if(obs !== "" && obsNum > 0 && !esSoloAnio(obs, obsNum)){
       count++;
       const div = document.createElement("div");
       div.className = "nd-item";
@@ -2047,7 +2061,7 @@ function generarGlosario(usados){
           <td><b>${escapeHtml(term)}</b></td>
           <td>Pendiente de definición
             <span class="screen-only" style="margin-left:8px;">
-              <button class="smallbtn green" style="padding:5px 8px;border-radius:8px;font-size:11px;" onclick="definirDesdeGlosario('${escapeJs(term)}')">Definir</button>
+              <button type="button" class="smallbtn green" style="padding:5px 8px;border-radius:8px;font-size:11px;" onclick="definirDesdeGlosario('${escapeJs(term)}')">Definir</button>
             </span>
           </td>`;
         table.appendChild(tr);
@@ -2131,7 +2145,9 @@ function cargarFormularioDesdeData(data, placaFallback = "") {
 
   $("cedula").value = data.cedula || "";
   $("fecha").value = data.fecha || "";
-  $("riesgo").value = data.riesgo || "BAJO";
+  const _riesgoVal = (data.riesgo || "").toString().trim().toUpperCase();
+  $("riesgo").value = (_riesgoVal === "MEDIO" || _riesgoVal === "ALTO") ? _riesgoVal : "BAJO";
+  if(typeof window.actualizarColorRiesgo === "function") window.actualizarColorRiesgo();
   $("obs").value = data.obs || "";
   if ($("valorToma")) $("valorToma").value = data.valorToma || "";
 
@@ -2170,7 +2186,7 @@ function obtenerDatos(){
     motor:$("motor") ? $("motor").value : "",
     cedula:$("cedula").value,
     fecha:$("fecha").value,
-    riesgo:$("riesgo").value,
+    riesgo:(($("riesgo").value || "").trim().toUpperCase() || "BAJO"),
     obs:$("obs").value,
     valorToma: $("valorToma") ? $("valorToma").value : "",
     tipoDocumento: document.getElementById("tipoDocumento")?.value || "cartilla",
@@ -2232,6 +2248,7 @@ function limpiar(){
   if($("motor")) $("motor").value="";
   $("cedula").value=""; $("fecha").value="";
   $("riesgo").value="BAJO"; $("obs").value="";
+  if(typeof window.actualizarColorRiesgo === "function") window.actualizarColorRiesgo();
   if($("valorToma")) $("valorToma").value = "";
   cargarBase();
   actualizarTituloPorPlaca();
@@ -2329,9 +2346,9 @@ async function renderListaPlacas(){
       <td>${escapeHtml(x.fecha||"")}</td>
       <td>
         <div class="row-actions">
-          <button class="smallbtn" onclick="(async function(){ await buscarPlaca('${escapeJs(x.placa)}'); cerrarModal('modalPlacas'); })()">Abrir</button>
-          <button class="smallbtn gray" onclick="copiarTexto('${escapeJs(x.placa)}')">Copiar</button>
-          <button class="smallbtn red" onclick="eliminarPlaca('${escapeJs(x.placa)}')">Eliminar</button>
+          <button type="button" class="smallbtn" onclick="(async function(){ await buscarPlaca('${escapeJs(x.placa)}'); cerrarModal('modalPlacas'); })()">Abrir</button>
+          <button type="button" class="smallbtn gray" onclick="copiarTexto('${escapeJs(x.placa)}')">Copiar</button>
+          <button type="button" class="smallbtn red" onclick="eliminarPlaca('${escapeJs(x.placa)}')">Eliminar</button>
         </div>
       </td>`;
     tb.appendChild(tr);
@@ -2386,8 +2403,8 @@ function renderListaGlosario(){
       <td>${escapeHtml(gloss[k])}</td>
       <td>
         <div class="row-actions">
-          <button class="smallbtn green" onclick="editarTermino('${escapeJs(k)}')">Editar</button>
-          ${isCustom ? `<button class="smallbtn red" onclick="borrarTermino('${escapeJs(k)}')">Eliminar</button>` : `<button class="smallbtn gray" onclick="personalizarBase('${escapeJs(k)}')">Personalizar</button>`}
+          <button type="button" class="smallbtn green" onclick="editarTermino('${escapeJs(k)}')">Editar</button>
+          ${isCustom ? `<button type="button" class="smallbtn red" onclick="borrarTermino('${escapeJs(k)}')">Eliminar</button>` : `<button type="button" class="smallbtn gray" onclick="personalizarBase('${escapeJs(k)}')">Personalizar</button>`}
         </div>
       </td>`;
     tb.appendChild(tr);
@@ -3099,7 +3116,7 @@ function renderSupportPrints(){
           <button onclick="previsualizarPrint(${i})">👁 Ver</button>
           <button onclick="moverPrint(${i},-1)">↑</button>
           <button onclick="moverPrint(${i},1)">↓</button>
-          <button class="del-btn" onclick="eliminarPrint(${i})">✕ Eliminar</button>
+          <button type="button" class="del-btn" onclick="eliminarPrint(${i})">✕ Eliminar</button>
         </div>
       </div>`;
     grid.appendChild(card);
@@ -3152,8 +3169,8 @@ async function generarPDFSaneamiento(placa){
 
   const logoData = localStorage.getItem('autocor_logo') || '';
   const logoHtml = logoData
-    ? `<img src="${logoData}" style="height:44px;object-fit:contain;display:block;max-width:130px;">`
-    : `<span style="font-family:Arial,sans-serif;font-weight:900;font-size:20px;color:#E53F2E;letter-spacing:1px;">AUTOCOR</span>`;
+    ? `<img src="${logoData}" style="height:48px;object-fit:contain;display:block;max-width:150px;">`
+    : `<span style="font-family:Arial,sans-serif;font-weight:900;font-size:22px;color:#E53F2E;letter-spacing:1.5px;">AUTOCOR</span>`;
 
   /* --- Filas con valor > 0 --- */
   const itemsConValor = [...tbody.querySelectorAll('tr')]
@@ -3181,67 +3198,140 @@ async function generarPDFSaneamiento(placa){
       <span style="flex:1;font-size:11px;color:#374151;">${escapeHtml(line)}</span>
     </div>`).join('');
 
+  /* ── Semáforo en abanico de clasificación de riesgo ── */
+  const riesgo = (document.getElementById('riesgo')?.value || '').trim().toUpperCase();
+  const isValidRiesgo = riesgo === 'BAJO' || riesgo === 'MEDIO' || riesgo === 'ALTO';
+  const rBg  = riesgo==='BAJO'?'#dcfce7':riesgo==='MEDIO'?'#fef9c3':riesgo==='ALTO'?'#fee2e2':'#f3f4f6';
+  const rTxt = riesgo==='BAJO'?'#166534':riesgo==='MEDIO'?'#854d0e':riesgo==='ALTO'?'#991b1b':'#6b7280';
+  /* Colores activos vs apagados */
+  const clRed    = riesgo==='ALTO'  ? '#ef4444' : '#2a0c0c';
+  const clYellow = riesgo==='MEDIO' ? '#eab308' : '#2b2500';
+  const clGreen  = riesgo==='BAJO'  ? '#22c55e' : '#082410';
+  /* Posiciones en abanico: pivote (160,158), radio 96
+     BAJO  → 150°  → (76, 110)
+     MEDIO →  90°  → (160, 62)
+     ALTO  →  30°  → (244, 110)  */
+  const glowGreen  = riesgo==='BAJO'  ? `<circle cx="76"  cy="110" r="33" fill="none" stroke="#22c55e" stroke-width="5" opacity="0.28"/>` : '';
+  const glowYellow = riesgo==='MEDIO' ? `<circle cx="160" cy="62"  r="33" fill="none" stroke="#eab308" stroke-width="5" opacity="0.28"/>` : '';
+  const glowRed    = riesgo==='ALTO'  ? `<circle cx="244" cy="110" r="33" fill="none" stroke="#ef4444" stroke-width="5" opacity="0.28"/>` : '';
+  const hlGreen    = riesgo==='BAJO'  ? `<ellipse cx="67"  cy="101" rx="9" ry="6" fill="white" opacity="0.22"/>` : '';
+  const hlYellow   = riesgo==='MEDIO' ? `<ellipse cx="151" cy="53"  rx="9" ry="6" fill="white" opacity="0.22"/>` : '';
+  const hlRed      = riesgo==='ALTO'  ? `<ellipse cx="235" cy="101" rx="9" ry="6" fill="white" opacity="0.22"/>` : '';
+  const gaugeSVG = `
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="320" height="178" viewBox="0 0 320 178">
+      <!-- Arco de fondo del abanico -->
+      <path d="M 76,110 A 96,96 0 0,1 244,110" fill="none" stroke="#374151" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.5"/>
+      <!-- Radios desde el pivote -->
+      <line x1="160" y1="158" x2="76"  y2="110" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+      <line x1="160" y1="158" x2="160" y2="62"  stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+      <line x1="160" y1="158" x2="244" y2="110" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+
+      <!-- ── Verde · BAJO ── -->
+      ${glowGreen}
+      <circle cx="76"  cy="110" r="28" fill="${clGreen}"/>
+      ${hlGreen}
+      <text x="76"  y="150" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" font-weight="800" fill="${riesgo==='BAJO'?'#166534':'#9ca3af'}">BAJO</text>
+
+      <!-- ── Amarillo · MEDIO ── -->
+      ${glowYellow}
+      <circle cx="160" cy="62"  r="28" fill="${clYellow}"/>
+      ${hlYellow}
+      <text x="160" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" font-weight="800" fill="${riesgo==='MEDIO'?'#854d0e':'#9ca3af'}">MEDIO</text>
+
+      <!-- ── Rojo · ALTO ── -->
+      ${glowRed}
+      <circle cx="244" cy="110" r="28" fill="${clRed}"/>
+      ${hlRed}
+      <text x="244" y="150" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" font-weight="800" fill="${riesgo==='ALTO'?'#991b1b':'#9ca3af'}">ALTO</text>
+
+      <!-- Pivote central -->
+      <circle cx="160" cy="158" r="8"  fill="#1f2125"/>
+      <circle cx="160" cy="158" r="3.5" fill="#e5e7eb"/>
+    </svg>
+    <div style="margin-top:4px;font-family:Arial,sans-serif;font-size:11px;background:${rBg};color:${rTxt};padding:4px 16px;border-radius:20px;font-weight:700;letter-spacing:0.4px;">
+      ${isValidRiesgo ? `CLASIFICACIÓN: ${riesgo}` : 'Sin clasificación de riesgo'}
+    </div>
+  </div>`;
+
   /* --- Template HTML de la carátula --- */
-  const sanHTML = `<div style="width:793px;background:#fff;padding:28px 30px 32px;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;color:#111827;">
+  const sanHTML = `<div style="width:793px;background:#fff;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;color:#111827;">
 
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-    <div style="font-size:8.5px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;line-height:1.4;">DEPARTAMENTO DE MESA DE CONTROL LEGAL - AUTOCOR</div>
-    ${logoHtml}
-  </div>
-  <div style="border-top:2.5px solid #E53F2E;margin-bottom:20px;"></div>
-
-  <h2 style="text-align:center;font-size:28px;font-weight:800;color:#111827;margin:0 0 20px;letter-spacing:0.2px;">[ Saneamiento Vehicular ]</h2>
-
-  <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
-    <thead>
-      <tr>
-        <th style="background:#17181b;color:#fff;padding:8px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:28%;">FECHA</th>
-        <th style="background:#17181b;color:#fff;padding:8px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:44%;">MARCA | MODELO</th>
-        <th style="background:#17181b;color:#fff;padding:8px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:28%;">PLACA</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="border:1px solid #e5e7eb;padding:9px 10px;text-align:center;font-size:12px;">${escapeHtml(fechaFmt)}</td>
-        <td style="border:1px solid #e5e7eb;padding:9px 10px;text-align:center;font-size:12px;font-weight:700;">${escapeHtml(marca)}${marca && modelo ? ' | ' : ''}${escapeHtml(modelo)}</td>
-        <td style="border:1px solid #e5e7eb;padding:9px 10px;text-align:center;font-size:14px;font-weight:900;">${escapeHtml(placa)}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h3 style="text-align:center;font-size:20px;font-weight:700;color:#111827;margin:0 0 14px;">[ Valores Pendientes de Pago ]</h3>
-
-  <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-    <thead>
-      <tr>
-        <th style="background:#1f2125;color:#fff;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:55%;">CONCEPTO</th>
-        <th style="background:#1f2125;color:#fff;padding:7px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:20%;">MONTO USD</th>
-        <th style="background:#1f2125;color:#fff;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:25%;">OBSERVACIÓN</th>
-      </tr>
-    </thead>
-    <tbody>${itemsHTML}</tbody>
-  </table>
-
-  <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;min-width:290px;">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:5px;">
-        <span style="color:#6b7280;font-weight:700;">VALOR DE TOMA:</span>
-        <span style="font-weight:800;margin-left:16px;">$ ${totalVT}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:10px;">
-        <span style="color:#6b7280;font-weight:700;">TOTAL DESCUENTOS:</span>
-        <span style="font-weight:800;margin-left:16px;">$ ${totalDesc}</span>
-      </div>
-      <div style="border-top:1px solid #e5e7eb;padding-top:10px;display:flex;justify-content:space-between;align-items:baseline;font-size:15px;">
-        <span style="font-weight:900;">TOTAL A PAGAR:</span>
-        <span style="font-weight:900;margin-left:16px;">$ ${totalPagar}</span>
-      </div>
+  <!-- ── Encabezado ── -->
+  <div style="background:#fff;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb;">
+    <div>${logoHtml}</div>
+    <div style="text-align:right;">
+      <div style="font-size:7.5px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;line-height:1.6;">Departamento de Mesa de Control Legal</div>
+      <div style="font-size:9.5px;color:#111827;font-weight:900;text-transform:uppercase;letter-spacing:0.6px;margin-top:2px;">AUTOCOR</div>
     </div>
   </div>
+  <div style="height:4px;background:#E53F2E;"></div>
 
-  <h3 style="text-align:center;font-size:17px;font-weight:700;color:#111827;margin:0 0 12px;">[ Observaciones Generales ]</h3>
-  ${obsRowsHTML}
+  <div style="padding:24px 28px 30px;">
 
+    <!-- ── Título principal ── -->
+    <h2 style="text-align:center;font-size:26px;font-weight:900;color:#6b7280;margin:0 0 16px;text-transform:uppercase;letter-spacing:0.5px;">Saneamiento Vehicular</h2>
+
+    ${gaugeSVG}
+
+    <!-- ── Tabla de identificación ── -->
+    <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+      <thead>
+        <tr>
+          <th style="background:#17181b;color:#fff;padding:9px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:28%;">FECHA</th>
+          <th style="background:#17181b;color:#fff;padding:9px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:44%;">MARCA | MODELO</th>
+          <th style="background:#17181b;color:#fff;padding:9px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;width:28%;">PLACA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border:1px solid #e5e7eb;padding:10px;text-align:center;font-size:12px;">${escapeHtml(fechaFmt)}</td>
+          <td style="border:1px solid #e5e7eb;padding:10px;text-align:center;font-size:12px;font-weight:700;">${escapeHtml(marca)}${marca && modelo ? ' | ' : ''}${escapeHtml(modelo)}</td>
+          <td style="border:1px solid #e5e7eb;padding:10px;text-align:center;font-size:15px;font-weight:900;letter-spacing:1px;">${escapeHtml(placa)}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ── Sección valores ── -->
+    <div style="font-size:11px;font-weight:800;color:#fff;background:#1f2125;padding:8px 12px;border-radius:6px 6px 0 0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0;">
+      Valores Pendientes de Pago
+    </div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+      <thead>
+        <tr>
+          <th style="background:#2d3142;color:#fff;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:55%;">CONCEPTO</th>
+          <th style="background:#2d3142;color:#fff;padding:7px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:20%;">MONTO USD</th>
+          <th style="background:#2d3142;color:#fff;padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;width:25%;">OBSERVACIÓN</th>
+        </tr>
+      </thead>
+      <tbody>${itemsHTML}</tbody>
+    </table>
+
+    <!-- ── Totales ── -->
+    <div style="display:flex;justify-content:flex-end;margin-bottom:24px;">
+      <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px 22px;min-width:310px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;margin-bottom:8px;">
+          <span style="color:#6b7280;font-weight:700;text-transform:uppercase;">Valor de Toma:</span>
+          <span style="font-weight:800;color:#111827;margin-left:16px;">$ ${totalVT}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;margin-bottom:14px;">
+          <span style="color:#6b7280;font-weight:700;text-transform:uppercase;">Total Descuentos:</span>
+          <span style="font-weight:900;color:#E53F2E;margin-left:16px;font-size:13px;">$ ${totalDesc}</span>
+        </div>
+        <div style="border-top:2px solid #e5e7eb;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;font-weight:900;text-transform:uppercase;">Total a Pagar:</span>
+          <span style="font-size:20px;font-weight:900;color:#15803d;margin-left:16px;">$ ${totalPagar}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Observaciones ── -->
+    <div style="font-size:11px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:0.5px;padding-bottom:8px;border-bottom:2px solid #e5e7eb;margin-bottom:12px;">
+      Observaciones Generales
+    </div>
+    ${obsRowsHTML}
+
+  </div>
 </div>`;
 
   /* --- Capturar carátula y generar PDF --- */
@@ -3329,7 +3419,7 @@ async function generarPDFSaneamiento(placa){
       }
     }
 
-    doc.save(`SANEAMIENTO (${placa}).pdf`);
+    doc.save(`SANEAMIENTO ${placa}.pdf`);
 
   }finally{
     try{ wrap.remove(); }catch(e){}
@@ -3460,7 +3550,7 @@ document.addEventListener('paste', function(e){
   <div class="modal modal-preview">
     <div class="modal-header">
       <h3 id="previewPrintModalTitle">VISTA PREVIA</h3>
-      <button class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="preview-img-wrap">

@@ -396,16 +396,16 @@
 
 <!-- TOOLBAR -->
 <div class="toolbar-wrap">
-  <button class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + Exportar</button>
-  <button class="btn-secondary" onclick="buscarPorPlacaPrompt()">🔍 Buscar Placa</button>
-  <button class="btn-secondary" onclick="agregarFilaDocumento()">+ Documento</button>
-  <button class="btn-secondary" onclick="deshacerUltimaFila('tbodyDocs', docsVentasBase.length)">↩ Deshacer doc.</button>
-  <button class="btn-tercero" onclick="agregarTercero()">👤 Pago con Terceras Personas</button>
-  <button class="btn-secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar prints</button>
-  <button class="btn-danger" onclick="eliminarTodosLosPrints()">✕ Eliminar prints</button>
-  <button class="btn-outline" onclick="restablecerBase()">↺ Restablecer</button>
-  <button class="btn-outline" id="btnIniciarSesion" onclick="abrirModal('modalUsuario')">Iniciar sesión</button>
-  <button class="btn-outline" id="btnCerrarSesion" onclick="cerrarSesion()" style="display:none;">Cerrar sesión</button>
+  <button type="button" class="btn-primary" onclick="guardarYExportarTodo()">💾 Guardar + Exportar</button>
+  <button type="button" class="btn-secondary" onclick="buscarPorPlacaPrompt()">🔍 Buscar Placa</button>
+  <button type="button" class="btn-secondary" onclick="agregarFilaDocumento()">+ Documento</button>
+  <button type="button" class="btn-secondary" onclick="deshacerUltimaFila('tbodyDocs', docsVentasBase.length)">↩ Deshacer doc.</button>
+  <button type="button" class="btn-tercero" onclick="agregarTercero()">👤 Pago con Terceras Personas</button>
+  <button type="button" class="btn-secondary" onclick="document.getElementById('printInput').click()">🖼 Agregar prints</button>
+  <button type="button" class="btn-danger" onclick="eliminarTodosLosPrints()">✕ Eliminar prints</button>
+  <button type="button" class="btn-outline" onclick="restablecerBase()">↺ Restablecer</button>
+  <button type="button" class="btn-outline" id="btnIniciarSesion" onclick="abrirModal('modalUsuario')">Iniciar sesión</button>
+  <button type="button" class="btn-outline" id="btnCerrarSesion" onclick="cerrarSesion()" style="display:none;">Cerrar sesión</button>
   <input id="printInput" class="hidden-input" type="file" accept="image/*" multiple>
 </div>
 
@@ -506,7 +506,7 @@
     </div>
   </div>
 
-  <div class="page-footer">AUTOCOR · Ventas &nbsp;·&nbsp; Ctrl+V para pegar capturas de pantalla</div>
+  <div class="page-footer">AUTOCOR · Ventas &nbsp;·&nbsp; Ctrl+V para pegar capturas de pantalla &nbsp;·&nbsp; <span style="opacity:.6;">v4.8</span></div>
 
 </div>
 
@@ -515,7 +515,7 @@
   <div class="modal modal-wide">
     <div class="modal-header">
       <h3 id="previewPrintModalTitle">VISTA PREVIA</h3>
-      <button class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalPrintPreview')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="preview-img-wrap">
@@ -530,7 +530,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Iniciar sesión</h3>
-      <button class="modal-close" onclick="cerrarModal('modalUsuario')">Cerrar</button>
+      <button type="button" class="modal-close" onclick="cerrarModal('modalUsuario')">Cerrar</button>
     </div>
     <div class="modal-body">
       <div class="notice">Ingresa tu usuario y clave para guardar y buscar cuadros de ventas.</div>
@@ -546,7 +546,7 @@
         </div>
       </div>
       <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
-        <button onclick="confirmarUsuario()" style="background:var(--brand);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;">Ingresar</button>
+        <button type="button" onclick="confirmarUsuario()" style="background:var(--brand);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;">Ingresar</button>
       </div>
     </div>
   </div>
@@ -878,11 +878,11 @@ function renderUnTercero(t, num){
     <div class="tercero-toolbar">
       <span class="tercero-num-label">TERCERA PERSONA #${num}</span>
       <div style="display:flex;gap:6px;align-items:center;">
-        <button style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #d1d5db;background:#fff;color:#374151;"
+        <button type="button" style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #d1d5db;background:#fff;color:#374151;"
           onclick="agregarFilaTercero('tbodyT_${t.id}')">+ Doc.</button>
-        <button style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #d1d5db;background:#fff;color:#374151;"
+        <button type="button" style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #d1d5db;background:#fff;color:#374151;"
           onclick="deshacerUltimaFila('tbodyT_${t.id}', terceroDocsBase.length)">↩ Deshacer</button>
-        <button class="btn-danger"
+        <button type="button" class="btn-danger"
           style="padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:none;color:#fff;"
           onclick="eliminarTercero(${t.id})">✕ Eliminar</button>
       </div>
@@ -949,10 +949,10 @@ function renderSupportPrints(){
       <div class="thumb-wrap"><img src="${item.src}" alt="Print ${index+1}"></div>
       <div class="meta">
         <div class="row-actions">
-          <button class="btn-secondary" onclick="previsualizarPrint(${index})">👁 Ver</button>
-          <button class="btn-secondary" onclick="moverPrint(${index},-1)">↑</button>
-          <button class="btn-secondary" onclick="moverPrint(${index},1)">↓</button>
-          <button class="del-btn" onclick="eliminarPrint(${index})">✕ Eliminar</button>
+          <button type="button" class="btn-secondary" onclick="previsualizarPrint(${index})">👁 Ver</button>
+          <button type="button" class="btn-secondary" onclick="moverPrint(${index},-1)">↑</button>
+          <button type="button" class="btn-secondary" onclick="moverPrint(${index},1)">↓</button>
+          <button type="button" class="del-btn" onclick="eliminarPrint(${index})">✕ Eliminar</button>
         </div>
       </div>`;
     grid.appendChild(card);
